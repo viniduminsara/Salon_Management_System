@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.gdse.controller.CreateAccountFormController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1550.0" pickOnBounds="true">
+         <image>
+            <Image url="@../img/salon-business-FB.png" />
+         </image>
+         <effect>
+            <ColorAdjust brightness="-0.45" contrast="-0.3" />
+         </effect>
+      </ImageView>
+      <Rectangle arcHeight="25.0" arcWidth="25.0" fill="WHITE" height="669.0" layoutX="123.0" layoutY="61.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="622.0" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="321.0" layoutY="118.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/moods-salon-low-resolution-color-logo-removebg.png" />
+         </image>
+      </ImageView>
+      <GridPane layoutX="214.0" layoutY="246.0" prefHeight="325.0" prefWidth="396.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <JFXTextField fx:id="txtFullName" labelFloat="true" promptText="Full Name" />
+            <JFXTextField fx:id="txtUserName" labelFloat="true" promptText="Username" GridPane.rowIndex="1" />
+            <JFXTextField fx:id="txtGmail" labelFloat="true" promptText="Gmail" GridPane.rowIndex="2" />
+            <JFXTextField fx:id="txtPassword" labelFloat="true" promptText="Password" GridPane.rowIndex="3" />
+            <JFXTextField fx:id="txtPasswordConfirm" labelFloat="true" promptText="Password Confirmation" GridPane.rowIndex="4" />
+            <JFXComboBox fx:id="cmbAccountType" labelFloat="true" prefHeight="31.0" prefWidth="309.0" promptText="Account Type" GridPane.rowIndex="5" />
+         </children>
+      </GridPane>
+      <JFXButton fx:id="signupbtn" layoutX="209.0" layoutY="597.0" onAction="#signupbtnOnAction" prefHeight="38.0" prefWidth="401.0" style="-fx-background-color: #CF5BD2; -fx-background-radius: 10px;" stylesheets="@../style/style.css" text="Sign up" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="887.0" layoutY="245.0" prefHeight="145.0" prefWidth="563.0" text="Already Have an Account?" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="45.0" />
+         </font>
+      </Label>
+      <Group fx:id="loginbtngrp" layoutX="1055.0" layoutY="385.0" onMouseClicked="#logingrpMouseClicked" styleClass="buttonhover" stylesheets="@../style/style.css">
+         <children>
+            <JFXButton opacity="0.51" prefHeight="66.0" prefWidth="183.0" style="-fx-background-color: white; -fx-background-radius: 10px;" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </JFXButton>
+            <Label layoutX="48.0" layoutY="10.0" prefHeight="42.0" prefWidth="92.0" text="Login" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="33.0" />
+               </font>
+            </Label>
+         </children>
+      </Group>
+   </children>
+</AnchorPane>

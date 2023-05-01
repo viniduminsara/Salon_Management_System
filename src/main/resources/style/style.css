@@ -1,0 +1,23 @@
+#loginbtn{
+    -fx-background-color: #CF5BD2;
+    -fx-background-radius: 10px;
+}
+
+.buttonhover:hover{
+    -fx-opacity: 80%;
+}
+
+.clickedbtn{
+    -fx-background-color: #0077B6;
+}
+
+.rectangle:hover{
+    -fx-opacity: 80%;
+}
+
+
+
+
+
+
+

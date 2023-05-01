@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AttendanceReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ce00e704-a459-4764-83ee-44ec87825eb2">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="moods salon"/>
+	<parameter name="EmployeeId" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT date,
+	status,
+	name
+FROM attendance
+	JOIN employee ON 
+	 employee.`employeeId` = attendance.`employeeId` 
+WHERE 
+	 attendance.`employeeId` =  $P{EmployeeId}]]>
+	</queryString>
+	<field name="date" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="date"/>
+		<property name="com.jaspersoft.studio.field.label" value="date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="attendance"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="attendance"/>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employee"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="123" splitType="Stretch">
+			<image>
+				<reportElement x="390" y="7" width="170" height="75" uuid="984bfeb8-8373-4cd0-9f61-19b8cd054018"/>
+				<imageExpression><![CDATA["F:/1st semester final project/moods salon/src/main/resources/img/moods-salon-low-resolution-color-logo-removebg.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="10" y="7" width="160" height="40" forecolor="#793287" uuid="95c5546b-9f39-4b58-8c8b-bf40827e50fd"/>
+				<textElement>
+					<font size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attendance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="55" width="120" height="18" forecolor="#793287" uuid="69e839ca-d289-4693-b36d-b25f4650d6c7"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Employee Name :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="130" y="55" width="180" height="18" forecolor="#793287" uuid="99cc5441-257e-4c8b-b20e-05543c4e8124"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="278" height="30" uuid="04d0a60d-eaa7-443b-8a21-01f91096ebbd">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5b0254b7-b86e-41ea-96ea-44d0e23546eb"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="278" y="0" width="277" height="30" uuid="d357f9b0-d9fd-430b-8cab-8bb0aae9107d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4468f22-2286-4901-a4c7-8f501657eb10"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<line>
+				<reportElement x="30" y="30" width="490" height="1" uuid="2be20430-9733-433e-beb4-9504782d0ec0"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="278" height="30" uuid="37090f2b-2e6f-4a1f-9eed-5d53ab6d5a5b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5b0254b7-b86e-41ea-96ea-44d0e23546eb"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="0" width="277" height="30" uuid="15f1f54a-207f-4486-a616-9abc00804bec">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4468f22-2286-4901-a4c7-8f501657eb10"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="43" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="8" width="560" height="24" forecolor="#793287" backcolor="#793287" uuid="59632fd8-4a5f-41f1-a523-481f147f5688"/>
+			</rectangle>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="10" y="10" width="100" height="20" forecolor="#FFFFFF" uuid="86f21cf4-0a2c-4d32-97a4-ebdcf4da6f40"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="10" width="194" height="22" forecolor="#FFFFFF" uuid="46c43be6-d431-4c02-9d6d-c5641e57bf59"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

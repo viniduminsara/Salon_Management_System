@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainPane" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../../style/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.gdse.controller.AdminDashboardFormController">
+   <children>
+      <AnchorPane prefHeight="800.0" prefWidth="341.0" style="-fx-background-color: #264653;">
+         <effect>
+            <DropShadow height="27.22" radius="10.7775" width="17.89" />
+         </effect>
+         <children>
+            <ImageView fitHeight="70.0" fitWidth="175.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../../img/moods-salon-low-resolution-color-logo-removebg.png" />
+               </image>
+            </ImageView>
+            <Line endX="161.0" layoutX="160.0" layoutY="89.0" startX="-143.0" stroke="#52796f" strokeWidth="3.0" />
+            <Line endX="161.0" layoutX="160.0" layoutY="180.0" startX="-143.0" stroke="#52796f" strokeWidth="3.0">
+               <rotationAxis>
+                  <Point3D />
+               </rotationAxis>
+            </Line>
+            <JFXButton fx:id="dashboardbtn" graphicTextGap="20.0" layoutX="10.0" layoutY="196.0" onAction="#dashboardbtnOnAction" prefHeight="37.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" styleClass="clickedbtn" text="Dashboard" textAlignment="RIGHT" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView id="-fx-dashboard" fitHeight="36.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/control-panel.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="customerbtn" graphicTextGap="20.0" layoutX="10.0" layoutY="254.0" onAction="#customerbtnOnAction" prefHeight="37.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Customer" textAlignment="RIGHT" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView id="-fx-dashboard" fitHeight="36.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/people_alt@10x.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="appointmnetbtn" graphicTextGap="16.0" layoutX="10.0" layoutY="312.0" onAction="#appointmentbtnOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Appoinment" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="37.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../../img/file-text.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="inventorybtn" graphicTextGap="20.0" layoutX="10.0" layoutY="434.0" onAction="#inventoryOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Inventory" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="37.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../../img/shopping-bag@24x.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="employeebtn" graphicTextGap="20.0" layoutX="10.0" layoutY="496.0" onAction="#employeeOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Employee" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/icons8-collaborator-male-100(1).png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="servicebtn" graphicTextGap="20.0" layoutX="10.0" layoutY="556.0" onAction="#servicebtnOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Service" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="34.0" fitWidth="36.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../../img/icons8-barbershop-100.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton layoutX="101.0" layoutY="740.0" onAction="#logoutBtnOnAction" prefHeight="46.0" prefWidth="137.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Logout" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/logout.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="supplierbtn" graphicTextGap="20.0" layoutX="11.0" layoutY="614.0" onAction="#supplierbtnOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Supplier" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/icons8-supplier-96.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="paymentbtn" graphicTextGap="20.0" layoutX="9.0" layoutY="373.0" onAction="#paymentBtnOnAction" prefHeight="50.0" prefWidth="320.0" ripplerFill="#0077b6" style="-fx-background-radius: 10px;" text="Payment" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/icons8-cash-90.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton contentDisplay="GRAPHIC_ONLY" layoutX="266.0" layoutY="111.0" prefHeight="27.0" prefWidth="42.0" />
+            <Group layoutY="91.0" onMouseClicked="#profileOnAction" styleClass="rectangle">
+               <children>
+                  <Rectangle fx:id="rectangle" arcHeight="15.0" arcWidth="15.0" fill="#0077b6" height="88.0" layoutX="10.0" layoutY="-1.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="319.0" />
+                  <Label fx:id="lblName" layoutX="88.0" layoutY="7.0" prefHeight="37.0" prefWidth="239.0" text="name here" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="imageView" fitHeight="57.0" fitWidth="58.0" layoutX="20.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/istockphoto-1316420668-612x612.jpg" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="88.0" layoutY="43.0" prefHeight="37.0" prefWidth="175.0" text="Admin" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Group>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="pane" layoutX="347.0" prefHeight="800.0" prefWidth="1205.0" />
+   </children>
+</AnchorPane>

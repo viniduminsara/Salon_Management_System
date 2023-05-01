@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.gdse.controller.LoginFormController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1561.0" layoutX="-6.0" pickOnBounds="true">
+         <Image url="@../img/salon-business-FB.png" />
+         <effect>
+            <ColorAdjust brightness="-0.37" contrast="-0.3" />
+         </effect>
+      </ImageView>
+      <Label layoutX="145.0" layoutY="296.0" prefHeight="208.0" prefWidth="598.0" text="WELCOME BACK" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="74.0" />
+         </font>
+      </Label>
+      <Rectangle arcHeight="40.0" arcWidth="40.0" fill="WHITE" height="622.0" layoutX="882.0" layoutY="89.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="559.0" />
+      <ImageView fitHeight="112.0" fitWidth="258.0" layoutX="1033.0" layoutY="127.0" pickOnBounds="true">
+         <image>
+            <Image url="@../img/moods-salon-low-resolution-color-logo-removebg.png" />
+         </image>
+      </ImageView>
+      <JFXTextField fx:id="txtusername" focusColor="#cf5bd2" labelFloat="true" layoutX="989.0" layoutY="305.0" onAction="#txtusernameOnAction" prefHeight="31.0" prefWidth="358.0" promptText="username" unFocusColor="#cf5bd2" />
+      <JFXPasswordField fx:id="txtpassword" focusColor="#cf5bd2" labelFloat="true" layoutX="989.0" layoutY="418.0" onAction="#txtpasswordOnAction" prefHeight="31.0" prefWidth="358.0" promptText="password" unFocusColor="#cf5bd2" />
+      <Label fx:id="lblcreateAccount" layoutX="1030.0" layoutY="609.0" onMouseClicked="#createlblMouseClicked" prefHeight="21.0" prefWidth="277.0" styleClass="buttonhover" stylesheets="@../style/style.css" text="Don't have an account, Create account" textFill="#cf5bd2">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="loginbtn" layoutX="989.0" layoutY="546.0" onAction="#loginbtnOnAction" prefHeight="42.0" prefWidth="358.0" styleClass="buttonhover" stylesheets="@../style/style.css" text="Login" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <ImageView fitHeight="38.0" fitWidth="35.0" layoutX="943.0" layoutY="302.0" pickOnBounds="true">
+         <image>
+            <Image url="@../img/icons8-person-96.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="35.0" layoutX="943.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/icons8-password-key-96(1).png" />
+         </image>
+      </ImageView>
+      <JFXCheckBox fx:id="checkBox" checkedColor="#cf5bd2" layoutX="1234.0" layoutY="469.0" onAction="#checkBoxOnAction" text="View Password" />
+      <JFXTextField fx:id="txtVisiblePassword" focusColor="#cf5bd2" labelFloat="true" layoutX="990.0" layoutY="418.0" onAction="#txtpasswordOnAction" prefHeight="31.0" prefWidth="358.0" promptText="password" unFocusColor="#cf5bd2" visible="false" />
+      <Label fx:id="lblError" alignment="CENTER" layoutX="1024.0" layoutY="505.0" prefHeight="21.0" prefWidth="280.0" textFill="#eb1414" visible="false" />
+   </children>
+</AnchorPane>
