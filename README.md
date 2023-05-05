@@ -6,6 +6,7 @@
 <ul>
 <li>Create a MySQL database and execute queries in src/main/java/lk/ijse/gdse/db/script.sql using database client.</li>
 <li>Setup Database Connection on 13 line of src/main/java/lk/ijse/gdse/db/DBConnection.java</li>
+<li>Reload the pom.xml file.</li>
 <li>ADD this VM option for run configurations.</li>
       
       --module-path
