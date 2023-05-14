@@ -5,7 +5,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -135,9 +135,14 @@
                                  </graphic>
                               </JFXButton>
                               <JFXTextField fx:id="txtSubject" labelFloat="true" layoutX="48.0" layoutY="113.0" prefHeight="31.0" prefWidth="533.0" promptText="Subject" style="-fx-background-color: lightblue; -fx-background-radius: 5px;" />
-                              <ProgressIndicator fx:id="progress" layoutX="219.0" layoutY="480.0" prefHeight="46.0" prefWidth="47.0" progress="0.0" />
+                              <ProgressBar fx:id="progress" layoutX="245.0" layoutY="491.0" prefHeight="23.0" prefWidth="402.0" progress="0.0" />
                            </children>
                         </AnchorPane>
+                        <ImageView fitHeight="390.0" fitWidth="367.0" layoutX="800.0" layoutY="156.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../img/Prepare-announcement-in-advance-1024x961.png" />
+                           </image>
+                        </ImageView>
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -152,5 +157,6 @@
    <stylesheets>
       <URL value="@../style/tab.css" />
       <URL value="@../style/table.css" />
+      <URL value="@../style/progressbar.css" />
    </stylesheets>
 </AnchorPane>

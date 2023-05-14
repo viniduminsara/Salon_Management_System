@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -97,6 +98,7 @@
                               </Label>
                            </children>
                         </AnchorPane>
+                        <ProgressBar fx:id="progressBar" layoutX="44.0" layoutY="425.0" prefHeight="23.0" prefWidth="286.0" progress="0.0" />
                             </children></AnchorPane>
                     </content>
                 </Tab>
@@ -111,6 +113,7 @@
     <stylesheets>
         <URL value="@../style/tab.css" />
         <URL value="@../style/table.css" />
+      <URL value="@../style/progressbar.css" />
     </stylesheets>
 
 </AnchorPane>

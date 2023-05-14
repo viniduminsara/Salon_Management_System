@@ -1,20 +1,26 @@
 package lk.ijse.gdse.mail;
 
-import com.email.durgesh.Email;
 import javafx.concurrent.Task;
 
-
-import javax.mail.Multipart;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
+import java.util.List;
+import java.util.Properties;
 
 
 public class Mail extends Task<Boolean> {
-    String mail;
-    String text;
-    String subject;
-    File file;
+    private String mail;
+    private String text;
+    private String subject;
+    private File file;
+    private List<String> emails;
 
     public Mail(String mail, String text, String subject, File file) {
         this.mail = mail;
@@ -27,42 +33,67 @@ public class Mail extends Task<Boolean> {
         this.mail = mail;
         this.text = text;
         this.subject=subject;
+    }
 
+    public Mail(List<String> emails, String text, String subject) {
+        this.text = text;
+        this.subject = subject;
+        this.emails = emails;
     }
 
     @Override
-    protected Boolean call() throws Exception {
-        try {
-            Email mail = new Email("moodssalon16@gmail.com", "fvbioyzckrwscqby");
-            mail.setFrom("moodssalon16@gmail.com", "Moods Salon");
-            mail.setSubject(subject);
-            mail.setContent(text, "text/html");
+    protected Boolean call() {
+        String from = "moodssalon16@gmail.com"; //sender's email address
 
-            if(file!=null) {
-                MimeBodyPart mbp1 = new MimeBodyPart();
-                mbp1.setContent(text, "text/html");
-                //mbp1.setText(text);
-                MimeBodyPart mbp2 = new MimeBodyPart();
-                mbp2.attachFile(file);
-                mbp2.setFileName("Payment Receipt.pdf");
-                Multipart mp = new MimeMultipart();
-                mp.addBodyPart(mbp1);
-                mp.addBodyPart(mbp2);
-                mail.addAttatchment(mp);
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", 587);
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("moodssalon16@gmail.com", "fvbioyzckrwscqby");
             }
+        });
+        updateProgress(25,100);
 
-            //mail.addAttatchment();
-            mail.addRecipient(this.mail);
+        try {
+            MimeMessage mimeMessage = new MimeMessage(session);
+            mimeMessage.setFrom(new InternetAddress(from));
+            mimeMessage.setSubject(this.subject);
+            if (emails != null) {
+                for (String email : emails) {
+                    mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(email));
+                }
+            } else {
+                mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(this.mail));
+            }
             updateProgress(50,100);
-            mail.send();
-            updateProgress(99,100);
-            updateProgress(100,100);
-            Thread.sleep(250);
-            return true;
-        } catch (Exception e) {
-            updateMessage("Connection Error - Sending User Details Error");
+            Thread.sleep(1000);
 
+            if (file != null) {
+                BodyPart messageBodyPart1 = new MimeBodyPart();
+                messageBodyPart1.setText(text);
+
+                MimeBodyPart messageBodyPart2 = new MimeBodyPart();
+                DataSource source = new FileDataSource(file);
+                messageBodyPart2.setDataHandler(new DataHandler(source));
+                messageBodyPart2.setFileName("Payment Receipt.pdf");
+
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(messageBodyPart1);
+                multipart.addBodyPart(messageBodyPart2);
+
+                mimeMessage.setContent(multipart);
+            } else {
+                mimeMessage.setText(this.text);
+            }
+            updateProgress(90,100);
+            Transport.send(mimeMessage);
+            updateProgress(100,100);
+        }catch (Exception e){
+            return false;
         }
-        return false;
+        return true;
     }
 }

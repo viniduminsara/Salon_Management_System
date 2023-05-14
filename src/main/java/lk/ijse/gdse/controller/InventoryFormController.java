@@ -424,16 +424,19 @@ public class InventoryFormController implements Initializable {
 
     @FXML
     void reportBtnOnction(ActionEvent event) {
-        try {
-            JasperDesign design = JRXmlLoader.load(new File("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\inventory.jrxml"));
-            JasperReport report = JasperCompileManager.compileReport(design);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, DBConnection.getInstance().getConnection());
-//            JasperPrintManager.printReport(jasperPrint, true);
-            JasperViewer.viewReport(jasperPrint,false);
+        new Thread(() -> {
+            try {
+                JasperDesign design = JRXmlLoader.load(new File("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\inventory.jrxml"));
+                JasperReport report = JasperCompileManager.compileReport(design);
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, DBConnection.getInstance().getConnection());
+                //            JasperPrintManager.printReport(jasperPrint, true);
+                JasperViewer.viewReport(jasperPrint,false);
 
-        } catch (JRException | SQLException e) {
-            e.printStackTrace();
-        }
+            } catch (JRException | SQLException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 
     @Override

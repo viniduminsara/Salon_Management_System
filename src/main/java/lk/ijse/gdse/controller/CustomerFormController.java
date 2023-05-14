@@ -3,18 +3,19 @@ package lk.ijse.gdse.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Paint;
-import lk.ijse.gdse.dto.Appointment;
 import lk.ijse.gdse.dto.Customer;
 import lk.ijse.gdse.dto.tm.CustomerTM;
 import lk.ijse.gdse.mail.Mail;
@@ -26,6 +27,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class CustomerFormController implements Initializable {
@@ -81,7 +84,7 @@ public class CustomerFormController implements Initializable {
     ObservableList<CustomerTM> data = FXCollections.observableArrayList();
 
     @FXML
-    private ProgressIndicator progress;
+    private ProgressBar progress;
 
     @FXML
     void addCustomerBtnOnAction(ActionEvent event) {
@@ -238,7 +241,6 @@ public class CustomerFormController implements Initializable {
     @FXML
     void sendBtnOnAction(ActionEvent event) {
         if (!(txtSubject.getText().isEmpty() || txtMessage.getText().isEmpty())) {
-            System.out.println("Start");
 
             List<String> emails = new ArrayList<>();
             try {
@@ -251,16 +253,20 @@ public class CustomerFormController implements Initializable {
             String subject = txtSubject.getText();
             String message = txtMessage.getText();
 
-            for (String email : emails) {
-
-                Mail mail = new Mail(email,subject,message);
-                Thread ob = new Thread(mail);
-                ob.setDaemon(true);
-                progress.progressProperty().bind(mail.progressProperty());
-                progress.visibleProperty().bind(mail.runningProperty());
-                ob.start();
-            }
-            System.out.println("end");
+            Mail mail = new Mail(emails,message,subject);
+            Thread thread = new Thread(mail);
+            mail.valueProperty().addListener((a, oldValue, newValue) -> {
+                if (newValue){
+                    new Alert(Alert.AlertType.CONFIRMATION,"Announcement was sent.").show();
+                    txtSubject.setText("");
+                    txtMessage.setText("");
+                }else {
+                    new Alert(Alert.AlertType.WARNING,"Connection error").show();
+                }
+            });
+            progress.progressProperty().bind(mail.progressProperty());
+            progress.visibleProperty().bind(mail.runningProperty());
+            thread.start();
         }else {
             new Alert(Alert.AlertType.WARNING,"Please fill the message!").show();
         }

@@ -88,6 +88,6 @@ public class EmployeeModel {
         if (rs.next()){
             return rs.getString(1);
         }
-        return null;
+        return "Invalid QR code";
     }
 }

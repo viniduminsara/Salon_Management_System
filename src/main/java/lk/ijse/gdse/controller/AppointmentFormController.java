@@ -267,6 +267,15 @@ public class AppointmentFormController implements Initializable {
 
         Mail mail = new Mail(email,subject,message);
         Thread thread = new Thread(mail);
+
+        mail.valueProperty().addListener((a, oldValue, newValue) -> {
+            if (newValue){
+                new Alert(Alert.AlertType.CONFIRMATION,"Mail sent successfully").show();
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Connection failed - can't send the mail").show();
+            }
+        });
+
         thread.setDaemon(true);
         thread.start();
     }

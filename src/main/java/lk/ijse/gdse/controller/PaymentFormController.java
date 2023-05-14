@@ -10,10 +10,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lk.ijse.gdse.db.DBConnection;
 import lk.ijse.gdse.dto.User;
@@ -70,6 +67,9 @@ public class PaymentFormController implements Initializable {
 
     @FXML
     private JFXButton searchCancelBtn;
+
+    @FXML
+    private ProgressBar progressBar;
 
     ObservableList<PaymentTM> data = FXCollections.observableArrayList();
 
@@ -170,6 +170,15 @@ public class PaymentFormController implements Initializable {
             Mail mail = new Mail(email,msg,subject,new File("F:\\1st semester final project\\receipts\\Receipt "+paymentId+".pdf"));
             Thread thread = new Thread(mail);
             thread.setDaemon(true);
+            mail.valueProperty().addListener((a, oldValue, newValue) -> {
+                if (newValue){
+                    new Alert(Alert.AlertType.CONFIRMATION,"Payment receipt was sent successfully").show();
+                }else{
+                    new Alert(Alert.AlertType.WARNING,"Connection failed - Payment receipt was sent unsuccessfully").show();
+                }
+            });
+            progressBar.progressProperty().bind(mail.progressProperty());
+            progressBar.visibleProperty().bind(mail.runningProperty());
             thread.start();
 
         } catch (JRException | SQLException e) {

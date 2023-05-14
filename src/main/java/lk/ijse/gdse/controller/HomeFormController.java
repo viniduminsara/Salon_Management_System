@@ -3,6 +3,7 @@ package lk.ijse.gdse.controller;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -84,10 +85,16 @@ public class HomeFormController implements Initializable {
 
     private void loadBarChart() {
         try {
-            XYChart.Series<String,Double> data = PaymentModel.findIncome();
+            XYChart.Series<String,Double> series = PaymentModel.findIncome();
             barChart.setLegendVisible(false);
-            if (data != null){
-                barChart.getData().addAll(data);
+            if (series != null){
+                barChart.getData().addAll(series);
+            }
+            for (XYChart.Data<String, Double> data : series.getData()) {
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.7), data.getNode());
+                tt.setFromY(400);
+                tt.setToY(0);
+                tt.play();
             }
         } catch (SQLException e) {
             e.printStackTrace();

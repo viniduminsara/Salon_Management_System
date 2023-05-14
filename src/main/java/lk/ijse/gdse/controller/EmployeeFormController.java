@@ -365,18 +365,20 @@ public class EmployeeFormController implements Initializable {
     void reportBtnOnAction(ActionEvent event) {
         String name = cmbEmployee.getSelectionModel().getSelectedItem();
         if (name != null) {
-            try {
-                String id = EmployeeModel.getEmployeeId(name);
-                JasperDesign design = JRXmlLoader.load("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\AttendanceReport.jrxml");
-                JasperReport report = JasperCompileManager.compileReport(design);
-                HashMap<String, Object> map = new HashMap();
-                map.put("EmployeeId", id);
-                JasperPrint jasperPrint = JasperFillManager.fillReport(report, map, DBConnection.getInstance().getConnection());
-                JasperViewer.viewReport(jasperPrint, false);
-            } catch (SQLException | JRException e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
-            }
+            new Thread(() -> {
+                try {
+                    String id = EmployeeModel.getEmployeeId(name);
+                    JasperDesign design = JRXmlLoader.load("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\AttendanceReport.jrxml");
+                    JasperReport report = JasperCompileManager.compileReport(design);
+                    HashMap<String, Object> map = new HashMap();
+                    map.put("EmployeeId", id);
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(report, map, DBConnection.getInstance().getConnection());
+                    JasperViewer.viewReport(jasperPrint, false);
+                } catch (SQLException | JRException e) {
+                    e.printStackTrace();
+                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                }
+            }).start();
         }else {
             new Alert(Alert.AlertType.WARNING,"Please select an employee").show();
         }
@@ -456,10 +458,7 @@ public class EmployeeFormController implements Initializable {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
-        if (name != null){
-            return name;
-        }
-        return "Invalid QR code";
+        return name;
     }
 
     public void markAttendence(String id){
