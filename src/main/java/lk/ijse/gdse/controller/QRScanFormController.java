@@ -86,7 +86,7 @@ public class QRScanFormController implements Initializable{
     }
 
     private void setGif() {
-        Image image = new Image(new File("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\loading-75.gif").toURI().toString());
+        Image image = new Image(new File("src/main/resources/img/loading-75.gif").toURI().toString());
         imageView.setImage(image);
     }
 

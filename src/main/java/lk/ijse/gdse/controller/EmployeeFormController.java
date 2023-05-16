@@ -32,6 +32,7 @@ import lk.ijse.gdse.model.AttendanceModel;
 import lk.ijse.gdse.model.EmployeeModel;
 import lk.ijse.gdse.qr.QRGenerator;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -143,6 +144,9 @@ public class EmployeeFormController implements Initializable {
     @FXML
     private JFXButton btnScanQR;
 
+    @FXML
+    private Label lblError;
+
     ObservableList<EmployeeTM> data = FXCollections.observableArrayList();
 
     ObservableList<MarkAttendanceTM> employees = FXCollections.observableArrayList();
@@ -165,8 +169,11 @@ public class EmployeeFormController implements Initializable {
                         TxtColours.setDefaultColours(txtName);
                         if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
                             TxtColours.setDefaultColours(txtContact);
+                            TxtColours.setDefaultColours(txtAddress);
+                            TxtColours.setDefaultColours(txtJobRole);
                             if (RegExPatterns.getDoublePattern().matcher(txtSalary.getText()).matches()) {
                                 TxtColours.setDefaultColours(txtSalary);
+                                lblError.setText("");
 
                                 String id = txtEmployeeId.getText();
                                 String name = txtName.getText();
@@ -178,38 +185,56 @@ public class EmployeeFormController implements Initializable {
                                 try {
                                     boolean isSaved = EmployeeModel.addEmployee(new Employee(id, name, address, contact, jobRole, salary));
                                     if (isSaved) {
-                                        new Alert(Alert.AlertType.CONFIRMATION, "Employee saved!").show();
+                                        new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee saved!",ButtonType.OK).show();
                                         clearTextFields();
                                         populateEmployeeTable();
                                         searchFilter();
                                     } else {
-                                        new Alert(Alert.AlertType.WARNING, "Employee not saved!").show();
+                                        new SystemAlert(Alert.AlertType.WARNING,"Warning","Employee not saved!",ButtonType.OK).show();
                                     }
                                 } catch (SQLException e) {
                                     e.printStackTrace();
-                                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                                    new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                                 }
                             }else {
-                                new Alert(Alert.AlertType.WARNING,"Please enter double value for salary.").show();
+                                lblError.setText("Please enter double value for salary.");
                                 TxtColours.setErrorColours(txtSalary);
                             }
                         }else {
-                            new Alert(Alert.AlertType.WARNING,"Invalid contact number").show();
+                            lblError.setText("Invalid contact number");
                             TxtColours.setErrorColours(txtContact);
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Invalid name.").show();
+                        lblError.setText("Invalid name.");
                         TxtColours.setErrorColours(txtName);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid employeeId.").show();
+                    lblError.setText("Invalid employeeId.");
                     TxtColours.setErrorColours(txtEmployeeId);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+                lblError.setText("Please fill all the details.");
+                if (txtEmployeeId.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtEmployeeId);
+                }
+                if (txtName.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtName);
+                }
+                if (txtContact.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtContact);
+                }
+                if (txtAddress.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtAddress);
+                }
+                if (txtJobRole.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtJobRole);
+                }
+                if (txtSalary.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtSalary);
+                }
             }
         }else{
-            new Alert(Alert.AlertType.WARNING,"Employee Id is already exists!").show();
+            lblError.setText("Employee Id is already exists!");
             TxtColours.setErrorColours(txtEmployeeId);
         }
     }
@@ -230,28 +255,36 @@ public class EmployeeFormController implements Initializable {
             ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION, "Are you sure to delete?", yes, no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
 
             if (result.orElse(no) == yes) {
                 String id = txtEmployeeId.getText();
+                if (RegExPatterns.getEmployeeId().matcher(id).matches()) {
+                    TxtColours.setDefaultColours(txtEmployeeId);
+                    lblError.setText("");
 
-                try {
-                    boolean isDeleted = EmployeeModel.deleteEmployee(id);
-                    if (isDeleted) {
-                        new Alert(Alert.AlertType.CONFIRMATION, "Employee has deleted!").show();
-                        clearTextFields();
-                        populateEmployeeTable();
-                        searchFilter();
-                    } else {
-                        new Alert(Alert.AlertType.WARNING, "Employee has not deleted!").show();
+                    try {
+                        boolean isDeleted = EmployeeModel.deleteEmployee(id);
+                        if (isDeleted) {
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee has deleted!",ButtonType.OK).show();
+                            clearTextFields();
+                            populateEmployeeTable();
+                            searchFilter();
+                        } else {
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Employee not deleted!",ButtonType.OK).show();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                }else {
+                    lblError.setText("Invalid employee Id");
+                    TxtColours.setErrorColours(txtEmployeeId);
                 }
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please enter employeeId.").show();
+            lblError.setText("Please enter employeeId.");
+            TxtColours.setErrorColours(txtEmployeeId);
         }
     }
 
@@ -271,8 +304,11 @@ public class EmployeeFormController implements Initializable {
                     TxtColours.setDefaultColours(txtName);
                     if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
                         TxtColours.setDefaultColours(txtContact);
+                        TxtColours.setDefaultColours(txtAddress);
+                        TxtColours.setDefaultColours(txtJobRole);
                         if (RegExPatterns.getDoublePattern().matcher(txtSalary.getText()).matches()) {
                             TxtColours.setDefaultColours(txtSalary);
+                            lblError.setText("");
 
                             String id = txtEmployeeId.getText();
                             String name = txtName.getText();
@@ -284,35 +320,53 @@ public class EmployeeFormController implements Initializable {
                             try {
                                 boolean isUpdated = EmployeeModel.updateEmployee(new Employee(id, name, address, contact, jobRole, salary));
                                 if (isUpdated) {
-                                    new Alert(Alert.AlertType.CONFIRMATION, "Employee details updated!").show();
+                                    new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee has updated!",ButtonType.OK).show();
                                     clearTextFields();
                                     populateEmployeeTable();
                                     searchFilter();
                                 } else {
-                                    new Alert(Alert.AlertType.WARNING, "Employee details not updated!").show();
+                                    new SystemAlert(Alert.AlertType.WARNING,"Warning","Employee not updated!",ButtonType.OK).show();
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();
-                                new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                                new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                             }
                         }else {
-                            new Alert(Alert.AlertType.WARNING,"Please enter double value for salary.").show();
+                            lblError.setText("Please enter double value for salary.");
                             TxtColours.setErrorColours(txtSalary);
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Invalid contact number").show();
+                        lblError.setText("Invalid contact number");
                         TxtColours.setErrorColours(txtContact);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid name.").show();
+                    lblError.setText("Invalid name.");
                     TxtColours.setErrorColours(txtName);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Invalid employeeId.").show();
+                lblError.setText("Invalid employeeId.");
                 TxtColours.setErrorColours(txtEmployeeId);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+            lblError.setText("Please fill all the details.");
+            if (txtEmployeeId.getText().isEmpty()){
+                TxtColours.setErrorColours(txtEmployeeId);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtContact.getText().isEmpty()){
+                TxtColours.setErrorColours(txtContact);
+            }
+            if (txtAddress.getText().isEmpty()){
+                TxtColours.setErrorColours(txtAddress);
+            }
+            if (txtJobRole.getText().isEmpty()){
+                TxtColours.setErrorColours(txtJobRole);
+            }
+            if (txtSalary.getText().isEmpty()){
+                TxtColours.setErrorColours(txtSalary);
+            }
         }
     }
 
@@ -340,24 +394,24 @@ public class EmployeeFormController implements Initializable {
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                    new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                 }
             }
 
             try {
                 boolean isSaved = AttendanceModel.saveAttendance(attendances);
                 if (isSaved) {
-                    new Alert(Alert.AlertType.CONFIRMATION, "Attendance saved successfully!").show();
+                    new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Attendance saved successfully!",ButtonType.OK).show();
                     populateMarkAttendenceTable();
                 } else {
-                    new Alert(Alert.AlertType.WARNING, "Attendence not saved!").show();
+                    new SystemAlert(Alert.AlertType.WARNING,"Warning","Attendence not saved!",ButtonType.OK).show();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Attendance already marked!").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Attendance already marked!",ButtonType.OK).show();
         }
     }
 
@@ -368,7 +422,7 @@ public class EmployeeFormController implements Initializable {
             new Thread(() -> {
                 try {
                     String id = EmployeeModel.getEmployeeId(name);
-                    JasperDesign design = JRXmlLoader.load("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\AttendanceReport.jrxml");
+                    JasperDesign design = JRXmlLoader.load("src/main/java/lk/ijse/gdse/report/AttendanceReport.jrxml");
                     JasperReport report = JasperCompileManager.compileReport(design);
                     HashMap<String, Object> map = new HashMap();
                     map.put("EmployeeId", id);
@@ -380,7 +434,7 @@ public class EmployeeFormController implements Initializable {
                 }
             }).start();
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please select an employee").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Please select an employee",ButtonType.OK).show();
         }
     }
 
@@ -415,7 +469,7 @@ public class EmployeeFormController implements Initializable {
                 e.printStackTrace();
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please select employee to generate QR.").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Please select employee to generate QR.",ButtonType.OK).show();
         }
     }
 
@@ -427,7 +481,7 @@ public class EmployeeFormController implements Initializable {
         QRScanFormController controller = loader.getController();
         controller.setEmployeeController(this);
         stage.setTitle("QR Scan");
-        stage.getIcons().add(new Image("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\logo.png"));
+        stage.getIcons().add(new Image("img/logo.png"));
         stage.centerOnScreen();
         stage.setOnCloseRequest(new EventHandler<>() {
             @Override
@@ -558,7 +612,7 @@ public class EmployeeFormController implements Initializable {
             ResultSet rs = EmployeeModel.getAllEmployees();
             data.clear();
             while (rs.next()){
-                JFXButton button = new JFXButton("edit",new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\edit-97@30x.png"));
+                JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditbtnOnAction(button);

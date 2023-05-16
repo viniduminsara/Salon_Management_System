@@ -19,7 +19,7 @@ public class Appinitializer extends Application {
         primaryStage.centerOnScreen();
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Login");
-        primaryStage.getIcons().add(new Image("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\logo.png"));
+        primaryStage.getIcons().add(new Image("img/logo.png"));
         primaryStage.show();
     }
 }

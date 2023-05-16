@@ -26,6 +26,7 @@ import lk.ijse.gdse.model.InventoryOrderModel;
 import lk.ijse.gdse.model.PlaceInventoryOrderModel;
 import lk.ijse.gdse.model.SupplierModel;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -152,6 +153,9 @@ public class InventoryFormController implements Initializable {
     @FXML
     private JFXButton cancelSearchBtn;
 
+    @FXML
+    private Label lblError;
+
     ObservableList<InventoryTM> data = FXCollections.observableArrayList();
 
     ObservableList<OrderCartTM> cart = FXCollections.observableArrayList();
@@ -172,10 +176,12 @@ public class InventoryFormController implements Initializable {
             if (!(txtInventory.getText().isEmpty() || txtName.getText().isEmpty() || txtQtyOnHand.getText().isEmpty() || txtUnitPrice.getText().isEmpty())) {
                 if (RegExPatterns.getInventoryId().matcher(txtInventory.getText()).matches()) {
                     TxtColours.setDefaultColours(txtInventory);
+                    TxtColours.setDefaultColours(txtName);
                     if (RegExPatterns.getIntPattern().matcher(txtQtyOnHand.getText()).matches()) {
                         TxtColours.setDefaultColours(txtQtyOnHand);
                         if (RegExPatterns.getDoublePattern().matcher(txtUnitPrice.getText()).matches()) {
                             TxtColours.setDefaultColours(txtUnitPrice);
+                            lblError.setText("");
 
                             String id = txtInventory.getText();
                             String name = txtName.getText();
@@ -185,34 +191,46 @@ public class InventoryFormController implements Initializable {
                             try {
                                 boolean isSaved = InventoryModel.addInventory(new Inventory(id, name, qtyOnHand, unitPrice));
                                 if (isSaved) {
-                                    new Alert(Alert.AlertType.CONFIRMATION, "Inventory item saved!").show();
+                                    new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item saved!",ButtonType.OK).show();
                                     populateInventoryTable();
                                     searchFilter();
                                     clearTextFields();
                                 } else {
-                                    new Alert(Alert.AlertType.WARNING, "Inventory item not saved!").show();
+                                    new SystemAlert(Alert.AlertType.WARNING,"Warning","Inventory item not saved!",ButtonType.OK).show();
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();
-                                new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                                new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                             }
                         }else {
-                            new Alert(Alert.AlertType.WARNING,"Please enter double value for unit price").show();
+                            lblError.setText("Please enter double value for unit price");
                             TxtColours.setErrorColours(txtUnitPrice);
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Please enter integer value for qtyOnHand.").show();
+                        lblError.setText("Please enter integer value for qtyOnHand.");
                         TxtColours.setErrorColours(txtQtyOnHand);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid inventoryId").show();
+                    lblError.setText("Invalid inventoryId");
                     TxtColours.setErrorColours(txtInventory);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please fill all details.").show();
+                lblError.setText("Please fill all details.");
+                if (txtInventory.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtInventory);
+                }
+                if (txtName.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtName);
+                }
+                if (txtQtyOnHand.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtQtyOnHand);
+                }
+                if (txtUnitPrice.getText().isEmpty()){
+                    TxtColours.setErrorColours(txtUnitPrice);
+                }
             }
         }else{
-            new Alert(Alert.AlertType.WARNING,"Inventory Id already exists!").show();
+            lblError.setText("Inventory Id already exists!");
             TxtColours.setErrorColours(txtInventory);
         }
     }
@@ -227,30 +245,39 @@ public class InventoryFormController implements Initializable {
     @FXML
     void deleteBtnOnAction(ActionEvent event) {
         if (!txtInventory.getText().isEmpty()) {
-        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION,"Are you sure to delete ?",yes,no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
 
-        if (result.orElse(no) == yes) {
+            if (result.orElse(no) == yes) {
                 String id = txtInventory.getText();
-                try {
-                    boolean isDeleted = InventoryModel.deleteInventory(id);
-                    if (isDeleted) {
-                        new Alert(Alert.AlertType.CONFIRMATION, "Inventory item has deleted!").show();
-                        populateInventoryTable();
-                        searchFilter();
-                        clearTextFields();
-                    } else {
-                        new Alert(Alert.AlertType.WARNING, "Inventory item not deleted!").show();
+                if (RegExPatterns.getInventoryId().matcher(id).matches()) {
+                    TxtColours.setDefaultColours(txtInventory);
+                    lblError.setText("");
+
+                    try {
+                        boolean isDeleted = InventoryModel.deleteInventory(id);
+                        if (isDeleted) {
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item has deleted!",ButtonType.OK).show();
+                            populateInventoryTable();
+                            searchFilter();
+                            clearTextFields();
+                        } else {
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Inventory item not deleted!",ButtonType.OK).show();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                }else {
+                    lblError.setText("Invalid inventory Id");
+                    TxtColours.setErrorColours(txtInventory);
                 }
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please enter the inventoryId.").show();
+            lblError.setText("Please enter the inventoryId.");
+            TxtColours.setErrorColours(txtInventory);
         }
     }
 
@@ -265,10 +292,12 @@ public class InventoryFormController implements Initializable {
         if (!(txtInventory.getText().isEmpty() || txtName.getText().isEmpty() || txtQtyOnHand.getText().isEmpty() || txtUnitPrice.getText().isEmpty())) {
             if (RegExPatterns.getInventoryId().matcher(txtInventory.getText()).matches()) {
                 TxtColours.setDefaultColours(txtInventory);
+                TxtColours.setDefaultColours(txtName);
                 if (RegExPatterns.getIntPattern().matcher(txtQtyOnHand.getText()).matches()) {
                     TxtColours.setDefaultColours(txtQtyOnHand);
                     if (RegExPatterns.getDoublePattern().matcher(txtUnitPrice.getText()).matches()) {
                         TxtColours.setDefaultColours(txtUnitPrice);
+                        lblError.setText("");
 
                         String id = txtInventory.getText();
                         String name = txtName.getText();
@@ -278,31 +307,43 @@ public class InventoryFormController implements Initializable {
                         try {
                             boolean isUpdated = InventoryModel.updateInventory(new Inventory(id, name, qtyOnHand, unitPrice));
                             if (isUpdated) {
-                                new Alert(Alert.AlertType.CONFIRMATION, "Inventory item has updated!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item has updated!",ButtonType.OK).show();
                                 clearTextFields();
                                 populateInventoryTable();
                                 searchFilter();
                             } else {
-                                new Alert(Alert.AlertType.WARNING, "Inventory item has not updated!").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","Inventory item not updated!",ButtonType.OK).show();
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Please enter double value for unit price").show();
+                        lblError.setText("Please enter double value for unit price");
                         TxtColours.setErrorColours(txtUnitPrice);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Please enter integer value for qtyOnHand.").show();
+                    lblError.setText("Please enter integer value for qtyOnHand.");
                     TxtColours.setErrorColours(txtQtyOnHand);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Invalid inventoryId").show();
+                lblError.setText("Invalid inventoryId");
                 TxtColours.setErrorColours(txtInventory);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+            lblError.setText("Please fill all details.");
+            if (txtInventory.getText().isEmpty()){
+                TxtColours.setErrorColours(txtInventory);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtQtyOnHand.getText().isEmpty()){
+                TxtColours.setErrorColours(txtQtyOnHand);
+            }
+            if (txtUnitPrice.getText().isEmpty()){
+                TxtColours.setErrorColours(txtUnitPrice);
+            }
         }
     }
 
@@ -315,7 +356,7 @@ public class InventoryFormController implements Initializable {
                 String name = lblInventoryName.getText();
                 double unitPrice = Double.parseDouble(lblUnitPrice.getText());
                 int qty = Integer.parseInt(txtQty.getText());
-                JFXButton button = new JFXButton("delete", new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\trash-can@1.5x.png"));
+                JFXButton button = new JFXButton("delete", new ImageView("img/trash-can@1.5x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setRemoveBtnOnAction(button);
@@ -338,10 +379,10 @@ public class InventoryFormController implements Initializable {
                 lblQtyOnHand.setText("");
                 txtQty.setText("");
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please enter integer value for qty.").show();
+                new SystemAlert(Alert.AlertType.WARNING,"Warning","Please enter integer value for qty.",ButtonType.OK).show();
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Fill all requirements").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Fill all requirements",ButtonType.OK).show();
         }
     }
 
@@ -397,7 +438,7 @@ public class InventoryFormController implements Initializable {
                 try {
                     boolean isPlaced = PlaceInventoryOrderModel.placeOrder(orderId, date, supplierId, userId, items);
                     if (isPlaced) {
-                        new Alert(Alert.AlertType.CONFIRMATION, "Inventory order placed!").show();
+                        new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventoy order placed!",ButtonType.OK).show();
                         clearComponents();
                         cart.clear();
                         generateOrderId();
@@ -406,7 +447,7 @@ public class InventoryFormController implements Initializable {
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                    new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                 }
             }else {
                 new Alert(Alert.AlertType.WARNING,"Add items for the order!").show();
@@ -426,7 +467,7 @@ public class InventoryFormController implements Initializable {
     void reportBtnOnction(ActionEvent event) {
         new Thread(() -> {
             try {
-                JasperDesign design = JRXmlLoader.load(new File("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\inventory.jrxml"));
+                JasperDesign design = JRXmlLoader.load(new File("src/main/java/lk/ijse/gdse/report/inventory.jrxml"));
                 JasperReport report = JasperCompileManager.compileReport(design);
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, DBConnection.getInstance().getConnection());
                 //            JasperPrintManager.printReport(jasperPrint, true);
@@ -516,7 +557,7 @@ public class InventoryFormController implements Initializable {
                 }
             }
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION,"Do you want remove '"+colInventoryName.getCellData(index)+"' item from cart?",yes,no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Do you want remove '"+colInventoryName.getCellData(index)+"' item ?",yes,no).showAndWait();
             if (result.orElse(no) == yes) {
                 tblCart.getItems().remove(index);
                 tblCart.refresh();
@@ -611,7 +652,7 @@ public class InventoryFormController implements Initializable {
             ResultSet rs = InventoryModel.getAllInventory();
             data.clear();
             while (rs.next()){
-                JFXButton button = new JFXButton("edit",new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\edit-97@30x.png"));
+                JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditBtnOnAction(button);

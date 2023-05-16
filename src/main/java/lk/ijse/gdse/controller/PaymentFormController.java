@@ -20,6 +20,7 @@ import lk.ijse.gdse.model.AppointmentModel;
 import lk.ijse.gdse.model.PaymentModel;
 import lk.ijse.gdse.model.PlacePaymentModel;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -93,25 +94,25 @@ public class PaymentFormController implements Initializable {
                     boolean isPaymentPlaced = PlacePaymentModel.placePayment(paymentId, amount, date, userId, appointmentId);
                     if (isPaymentPlaced) {
                         generateReceipt(paymentId,appointmentId);
-                        new Alert(Alert.AlertType.CONFIRMATION, "Payment has placed!").show();
+                        new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Payment has placed!",ButtonType.OK).show();
                         populatePaymentTable();
                         searchFilter();
                         clearComponents();
                         generatePaymentId();
                         getAppointments();
                     } else {
-                        new Alert(Alert.AlertType.WARNING, "Payment has not placed!").show();
+                        new SystemAlert(Alert.AlertType.WARNING,"Warning","Payment has not placed!",ButtonType.OK).show();
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                    new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please enter valid amount.").show();
+                new SystemAlert(Alert.AlertType.WARNING,"Warning","Please enter valid amount.",ButtonType.OK).show();
                 TxtColours.setErrorColours(txtAmount);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Select the appointmentId!").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Select the appointmentId!",ButtonType.OK).show();
         }
     }
 
@@ -153,7 +154,7 @@ public class PaymentFormController implements Initializable {
     private void generateReceipt(String paymentId,String appointmentId) {
 
         try {
-            JasperDesign design = JRXmlLoader.load("F:\\1st semester final project\\moods salon\\src\\main\\java\\lk\\ijse\\gdse\\report\\paymentReceipt.jrxml");
+            JasperDesign design = JRXmlLoader.load("src/main/java/lk/ijse/gdse/report/paymentReceipt.jrxml");
             JasperReport report = JasperCompileManager.compileReport(design);
             HashMap<String,Object> map = new HashMap();
             map.put("parameterPaymentId",paymentId);
@@ -172,9 +173,9 @@ public class PaymentFormController implements Initializable {
             thread.setDaemon(true);
             mail.valueProperty().addListener((a, oldValue, newValue) -> {
                 if (newValue){
-                    new Alert(Alert.AlertType.CONFIRMATION,"Payment receipt was sent successfully").show();
+                    new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Payment receipt was sent successfully",ButtonType.OK).show();
                 }else{
-                    new Alert(Alert.AlertType.WARNING,"Connection failed - Payment receipt was sent unsuccessfully").show();
+                    new SystemAlert(Alert.AlertType.WARNING,"Warning","Connection failed",ButtonType.OK).show();
                 }
             });
             progressBar.progressProperty().bind(mail.progressProperty());
@@ -183,7 +184,7 @@ public class PaymentFormController implements Initializable {
 
         } catch (JRException | SQLException e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!0").show();
         }
 
     }

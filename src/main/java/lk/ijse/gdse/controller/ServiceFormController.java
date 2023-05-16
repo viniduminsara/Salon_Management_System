@@ -13,10 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
 import lk.ijse.gdse.dto.Service;
 import lk.ijse.gdse.dto.tm.ServiceTM;
 import lk.ijse.gdse.model.ServiceModel;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 
 import java.net.URL;
@@ -60,6 +62,9 @@ public class ServiceFormController implements Initializable {
     @FXML
     private JFXButton searchCancelBtn;
 
+    @FXML
+    private Label lblError;
+
     ObservableList<ServiceTM> data = FXCollections.observableArrayList();
 
     @FXML
@@ -76,8 +81,12 @@ public class ServiceFormController implements Initializable {
                 TxtColours.setDefaultColours(txtserviceid);
                 if (RegExPatterns.getServiceId().matcher(txtserviceid.getText()).matches()) {
                     TxtColours.setDefaultColours(txtserviceid);
+                    TxtColours.setDefaultColours(txtDescription);
                     if (RegExPatterns.getDoublePattern().matcher(txtPrice.getText()).matches()) {
                         TxtColours.setDefaultColours(txtPrice);
+                        cmbCategory.setFocusColor(Paint.valueOf("#4059a9"));
+                        cmbCategory.setUnFocusColor(Paint.valueOf("#4d4d4d"));
+                        lblError.setText("");
 
                         String id = txtserviceid.getText();
                         String description = txtDescription.getText();
@@ -87,31 +96,44 @@ public class ServiceFormController implements Initializable {
                         try {
                             boolean isSaved = ServiceModel.addService(new Service(id, description, price, category));
                             if (isSaved) {
-                                new Alert(Alert.AlertType.CONFIRMATION, "Service Saved!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service Saved!",ButtonType.OK).show();
                                 clearTextFields();
                                 populateServiceTable();
                                 searchFilter();
                             } else {
-                                new Alert(Alert.AlertType.WARNING, "Service not saved!").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","Service not saved!",ButtonType.OK).show();
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Please enter double value for price.").show();
+                        lblError.setText("Please enter double value for price.");
                         TxtColours.setErrorColours(txtPrice);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid serviceId.").show();
+                    lblError.setText("Invalid serviceId.");
                     TxtColours.setErrorColours(txtserviceid);
                 }
             } else {
-                new Alert(Alert.AlertType.WARNING, "Service Id already exists!").show();
+                lblError.setText("Service Id already exists!");
                 TxtColours.setErrorColours(txtserviceid);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all details").show();
+            lblError.setText("Please fill all details");
+            if (txtserviceid.getText().isEmpty()){
+                TxtColours.setErrorColours(txtserviceid);
+            }
+            if (txtDescription.getText().isEmpty()){
+                TxtColours.setErrorColours(txtDescription);
+            }
+            if (txtPrice.getText().isEmpty()){
+                TxtColours.setErrorColours(txtPrice);
+            }
+            if (cmbCategory.getSelectionModel().getSelectedItem() == null){
+                cmbCategory.setFocusColor(Paint.valueOf("Red"));
+                cmbCategory.setUnFocusColor(Paint.valueOf("Red"));
+            }
         }
     }
 
@@ -128,27 +150,36 @@ public class ServiceFormController implements Initializable {
             ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure to delete?", yes, no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete?",yes,no).showAndWait();
 
             if (result.orElse(no) == yes) {
                 String id = txtserviceid.getText();
-                try {
-                    boolean isDeleted = ServiceModel.deleteService(id);
-                    if (isDeleted) {
-                        new Alert(Alert.AlertType.CONFIRMATION, "Service has deleted!").show();
-                        clearTextFields();
-                        populateServiceTable();
-                        searchFilter();
-                    } else {
-                        new Alert(Alert.AlertType.WARNING, "Service has not deleted").show();
+                if (RegExPatterns.getServiceId().matcher(id).matches()) {
+                    TxtColours.setDefaultColours(txtserviceid);
+                    lblError.setText("");
+
+                    try {
+                        boolean isDeleted = ServiceModel.deleteService(id);
+                        if (isDeleted) {
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service deleted!",ButtonType.OK).show();
+                            clearTextFields();
+                            populateServiceTable();
+                            searchFilter();
+                        } else {
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Service not deleted!",ButtonType.OK).show();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                }else {
+                    lblError.setText("Invalid service Id");
+                    TxtColours.setErrorColours(txtserviceid);
                 }
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please enter serviceId.").show();
+            lblError.setText("Please enter serviceId.");
+            TxtColours.setErrorColours(txtserviceid);
         }
     }
 
@@ -157,8 +188,12 @@ public class ServiceFormController implements Initializable {
         if (!(txtserviceid.getText().isEmpty() || txtDescription.getText().isEmpty() || txtPrice.getText().isEmpty() || cmbCategory.getSelectionModel().getSelectedItem() == null)) {
             if (RegExPatterns.getServiceId().matcher(txtserviceid.getText()).matches()) {
                 TxtColours.setDefaultColours(txtserviceid);
+                TxtColours.setDefaultColours(txtDescription);
                 if (RegExPatterns.getDoublePattern().matcher(txtPrice.getText()).matches()) {
                     TxtColours.setDefaultColours(txtPrice);
+                    cmbCategory.setFocusColor(Paint.valueOf("#4059a9"));
+                    cmbCategory.setUnFocusColor(Paint.valueOf("#4d4d4d"));
+                    lblError.setText("");
 
                     String id = txtserviceid.getText();
                     String description = txtDescription.getText();
@@ -168,27 +203,40 @@ public class ServiceFormController implements Initializable {
                     try {
                         boolean isUpdated = ServiceModel.updateService(new Service(id, description, price, category));
                         if (isUpdated) {
-                            new Alert(Alert.AlertType.CONFIRMATION, "Service has updated!").show();
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service updated!",ButtonType.OK).show();
                             clearTextFields();
                             populateServiceTable();
                             searchFilter();
                         } else {
-                            new Alert(Alert.AlertType.WARNING, "Service has not updated!").show();
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Service has not updated!",ButtonType.OK).show();
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Please enter double value for price.").show();
+                    lblError.setText("Please enter double value for price.");
                     TxtColours.setErrorColours(txtPrice);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Invalid serviceId.").show();
+                lblError.setText("Invalid serviceId.");
                 TxtColours.setErrorColours(txtserviceid);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+            lblError.setText("Please fill all details");
+            if (txtserviceid.getText().isEmpty()){
+                TxtColours.setErrorColours(txtserviceid);
+            }
+            if (txtDescription.getText().isEmpty()){
+                TxtColours.setErrorColours(txtDescription);
+            }
+            if (txtPrice.getText().isEmpty()){
+                TxtColours.setErrorColours(txtPrice);
+            }
+            if (cmbCategory.getSelectionModel().getSelectedItem() == null){
+                cmbCategory.setFocusColor(Paint.valueOf("Red"));
+                cmbCategory.setUnFocusColor(Paint.valueOf("Red"));
+            }
         }
     }
 
@@ -251,7 +299,7 @@ public class ServiceFormController implements Initializable {
             ResultSet rs = ServiceModel.getAll();
             data.clear();
             while (rs.next()){
-                JFXButton button = new JFXButton("edit",new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\edit-97@30x.png"));
+                JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditBtnOnAction(button);

@@ -1,9 +1,8 @@
 package lk.ijse.gdse.controller;
 
-import com.ctc.wstx.shaded.msv_core.reader.trex.TREXBaseReader;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
@@ -16,13 +15,11 @@ import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
 import lk.ijse.gdse.model.UserModel;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 
-import javax.imageio.ImageIO;
 import java.io.*;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
 public class ProfileFormController {
 
@@ -71,6 +68,9 @@ public class ProfileFormController {
     @FXML
     private Label lblUpdateError;
 
+    @FXML
+    private JFXButton btnCancel;
+
     public User user;
 
     private File file;
@@ -83,6 +83,7 @@ public class ProfileFormController {
     @FXML
     void btnChangeOnAction(ActionEvent event) {
         btnSave.setVisible(true);
+        btnCancel.setVisible(true);
         txtFullName.setEditable(true);
         txtUserName.setEditable(true);
         txtGmail.setEditable(true);
@@ -129,31 +130,31 @@ public class ProfileFormController {
                             InputStream inputStream = new FileInputStream(file);
                             boolean isUpdated = UserModel.updateUser(new User(id,fullName,username,type,gmail,password,inputStream));
                             if (isUpdated){
-                                new Alert(Alert.AlertType.CONFIRMATION,"User details updated!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","User details updated!", ButtonType.OK).show();
                                 refreshUser();
                                 setDetails();
                                 setTextFields();
                             }else {
-                                new Alert(Alert.AlertType.WARNING,"User details not updated!").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","User details not updated!",ButtonType.OK).show();
                             }
                         } catch (SQLException | FileNotFoundException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR,"Something went wrong").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong",ButtonType.OK).show();
                         }
                     }else {
                         try {
                             boolean isUpdated = UserModel.updateWithoutImage(new User(id,fullName,username,type,gmail,password,null));
                             if (isUpdated){
-                                new Alert(Alert.AlertType.CONFIRMATION,"User details updated!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","User details updated!", ButtonType.OK).show();
                                 refreshUser();
                                 setDetails();
                                 setTextFields();
                             }else {
-                                new Alert(Alert.AlertType.WARNING,"User details not updated!").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","User details not updated!",ButtonType.OK).show();
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR,"Something went wrong").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong",ButtonType.OK).show();
                         }
                     }
                 }else {
@@ -165,7 +166,7 @@ public class ProfileFormController {
                 TxtColours.setErrorColours(txtFullName);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all fields!").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Please fill all fields!",ButtonType.OK);
         }
     }
 
@@ -208,15 +209,15 @@ public class ProfileFormController {
                         try {
                             boolean isUpdated = UserModel.updatePassword(id,newPassword);
                             if (isUpdated){
-                                new Alert(Alert.AlertType.CONFIRMATION,"Password is updated!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Password is updated!",ButtonType.OK).show();
                                 refreshUser();
                                 clearUpdate();
                             }else {
-                                new Alert(Alert.AlertType.WARNING,"Password not updated").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","Password not updated",ButtonType.OK).show();
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR,"Something went wrong").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong",ButtonType.OK).show();
                         }
                     }else {
                         TxtColours.setErrorColours(txtNewPassword);
@@ -235,6 +236,12 @@ public class ProfileFormController {
             TxtColours.setErrorColours(txtNewPassword);
             lblUpdateError.setText("Please enter new password.");
         }
+    }
+
+    @FXML
+    void btnCancelOnAction(ActionEvent event) {
+        setDetails();
+        setTextFields();
     }
 
     private void clearUpdate() {
@@ -262,6 +269,7 @@ public class ProfileFormController {
 
     private void setTextFields() {
         btnSave.setVisible(false);
+        btnCancel.setVisible(false);
         txtFullName.setEditable(false);
         txtUserName.setEditable(false);
         txtGmail.setEditable(false);

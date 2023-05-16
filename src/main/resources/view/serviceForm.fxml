@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -41,7 +42,7 @@
                               </JFXButton>
                                     </children>
                                 </AnchorPane>
-                                <JFXButton graphicTextGap="8.0" layoutX="38.0" layoutY="380.0" onAction="#addBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #99d98c; -fx-background-radius: 10px;" text="Add " textFill="WHITE">
+                                <JFXButton graphicTextGap="8.0" layoutX="38.0" layoutY="404.0" onAction="#addBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #99d98c; -fx-background-radius: 10px;" text="Add " textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="32.0" fitWidth="37.0" pickOnBounds="true">
                                             <image>
@@ -52,8 +53,11 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
-                                <AnchorPane layoutX="30.0" layoutY="27.0" prefHeight="332.0" prefWidth="509.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
+                                <AnchorPane layoutX="30.0" layoutY="27.0" prefHeight="362.0" prefWidth="509.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                                     <children>
                                         <JFXTextField fx:id="txtPrice" labelFloat="true" layoutX="56.0" layoutY="198.0" prefHeight="31.0" prefWidth="282.0" promptText="Price" />
                                         <JFXTextField fx:id="txtDescription" labelFloat="true" layoutX="56.0" layoutY="138.0" prefHeight="31.0" prefWidth="282.0" promptText="Description" />
@@ -64,9 +68,10 @@
                                             </font>
                                         </Label>
                               <JFXComboBox fx:id="cmbCategory" labelFloat="true" layoutX="56.0" layoutY="261.0" prefHeight="31.0" prefWidth="284.0" promptText="Category" />
+                              <Label fx:id="lblError" alignment="CENTER" layoutX="56.0" layoutY="315.0" prefHeight="21.0" prefWidth="412.0" textFill="RED" />
                                     </children>
                                 </AnchorPane>
-                                <JFXButton graphicTextGap="10.0" layoutX="209.0" layoutY="380.0" onAction="#updateBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update " textFill="WHITE">
+                                <JFXButton graphicTextGap="10.0" layoutX="209.0" layoutY="403.0" onAction="#updateBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update " textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true">
                                             <image>
@@ -77,8 +82,11 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
-                                <JFXButton graphicTextGap="10.0" layoutX="380.0" layoutY="380.0" onAction="#deleteBtnOAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete" textFill="WHITE">
+                                <JFXButton graphicTextGap="10.0" layoutX="380.0" layoutY="402.0" onAction="#deleteBtnOAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete" textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="32.0" pickOnBounds="true">
                                             <image>
@@ -89,6 +97,9 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
                                 <AnchorPane layoutX="578.0" layoutY="119.0" prefHeight="574.0" prefWidth="601.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                                     <children>

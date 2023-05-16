@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
@@ -68,6 +69,9 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                         <AnchorPane layoutX="30.0" layoutY="14.0" prefHeight="205.0" prefWidth="797.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                            <children>
@@ -81,6 +85,7 @@
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Label>
+                              <Label fx:id="lblerror" alignment="CENTER" layoutX="523.0" layoutY="163.0" prefHeight="27.0" prefWidth="260.0" textFill="RED" />
                            </children>
                         </AnchorPane>
                         <JFXButton graphicTextGap="10.0" layoutX="878.0" layoutY="94.0" onAction="#updateCustomerBtnOnAction" prefHeight="46.0" prefWidth="211.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update Customer " textFill="WHITE">
@@ -94,6 +99,9 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                         <JFXButton graphicTextGap="10.0" layoutX="878.0" layoutY="166.0" onAction="#deleteCustomerBtnOnAction" prefHeight="46.0" prefWidth="211.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete Customer" textFill="WHITE">
                            <graphic>
@@ -106,6 +114,9 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                      </children></AnchorPane>
             </content>
@@ -133,6 +144,9 @@
                                        </image>
                                     </ImageView>
                                  </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </JFXButton>
                               <JFXTextField fx:id="txtSubject" labelFloat="true" layoutX="48.0" layoutY="113.0" prefHeight="31.0" prefWidth="533.0" promptText="Subject" style="-fx-background-color: lightblue; -fx-background-radius: 5px;" />
                               <ProgressBar fx:id="progress" layoutX="245.0" layoutY="491.0" prefHeight="23.0" prefWidth="402.0" progress="0.0" />

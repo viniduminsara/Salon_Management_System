@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import lk.ijse.gdse.dto.User;
 import lk.ijse.gdse.model.UserModel;
+import lk.ijse.gdse.util.SystemAlert;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -138,7 +139,7 @@ public class AdminDashboardFormController implements Initializable {
         ButtonType yes = new ButtonType("Yes",ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("No",ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION,"Do you want to logout?",yes,no).showAndWait();
+        Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Logout","Do you want to logout?",yes,no).showAndWait();
         if (result.orElse(no) == yes) {
             mainPane.getChildren().clear();
             mainPane.getChildren().add(FXMLLoader.load(getClass().getResource("/view/loginForm.fxml")));
@@ -215,7 +216,7 @@ public class AdminDashboardFormController implements Initializable {
             InputStream inputStream = user.getInputStream();
             imageView.setImage(new Image(inputStream, 58, 57, false, true));
         }else {
-            imageView.setImage(new Image("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\images.png"));
+            imageView.setImage(new Image("img/images.png"));
         }
     }
 

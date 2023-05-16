@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -42,7 +43,7 @@
                               </JFXButton>
                                     </children>
                                 </AnchorPane>
-                                <JFXButton graphicTextGap="8.0" layoutX="40.0" layoutY="512.0" onAction="#addBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #99d98c; -fx-background-radius: 10px;" text="Add " textFill="WHITE">
+                                <JFXButton graphicTextGap="8.0" layoutX="40.0" layoutY="534.0" onAction="#addBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #99d98c; -fx-background-radius: 10px;" text="Add " textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="32.0" fitWidth="37.0" pickOnBounds="true">
                                             <image>
@@ -53,8 +54,11 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
-                                <AnchorPane layoutX="30.0" layoutY="27.0" prefHeight="465.0" prefWidth="509.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
+                                <AnchorPane layoutX="30.0" layoutY="27.0" prefHeight="488.0" prefWidth="509.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                                     <children>
                                         <JFXTextField fx:id="txtContact" labelFloat="true" layoutX="56.0" layoutY="198.0" prefHeight="31.0" prefWidth="282.0" promptText="Contact" />
                                         <JFXTextField fx:id="txtName" labelFloat="true" layoutX="56.0" layoutY="138.0" prefHeight="31.0" prefWidth="282.0" promptText=" Name" />
@@ -67,9 +71,10 @@
                                         </Label>
                               <JFXTextField fx:id="txtJobRole" labelFloat="true" layoutX="56.0" layoutY="322.0" prefHeight="31.0" prefWidth="282.0" promptText="Job Role" />
                               <JFXTextField fx:id="txtSalary" labelFloat="true" layoutX="56.0" layoutY="386.0" prefHeight="31.0" prefWidth="282.0" promptText="Salary" />
+                              <Label fx:id="lblError" alignment="CENTER" layoutX="56.0" layoutY="438.0" prefHeight="21.0" prefWidth="386.0" textFill="RED" />
                                     </children>
                                 </AnchorPane>
-                                <JFXButton graphicTextGap="10.0" layoutX="210.0" layoutY="512.0" onAction="#updateBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update " textFill="WHITE">
+                                <JFXButton graphicTextGap="10.0" layoutX="209.0" layoutY="534.0" onAction="#updateBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update " textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true">
                                             <image>
@@ -80,8 +85,11 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
-                                <JFXButton graphicTextGap="10.0" layoutX="384.0" layoutY="511.0" onAction="#deleteBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete" textFill="WHITE">
+                                <JFXButton graphicTextGap="10.0" layoutX="381.0" layoutY="533.0" onAction="#deleteBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete" textFill="WHITE">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="32.0" pickOnBounds="true">
                                             <image>
@@ -92,6 +100,9 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
                                 <AnchorPane layoutX="578.0" layoutY="119.0" prefHeight="574.0" prefWidth="601.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                                     <children>
@@ -154,6 +165,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                         <JFXButton fx:id="btnScanQR" graphicTextGap="15.0" layoutX="889.0" layoutY="30.0" onAction="#scanQRBtnOnAction" prefHeight="46.0" prefWidth="216.0" style="-fx-background-color: #2a9d8f; -fx-background-radius: 10px;" text="Scan QR" textFill="WHITE">
                            <font>
@@ -166,6 +180,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                      </children></AnchorPane>
               </content>
@@ -210,6 +227,9 @@
                                        </image>
                                     </ImageView>
                                  </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </JFXButton>
                               <Label layoutX="22.0" layoutY="25.0" prefHeight="35.0" prefWidth="388.0" text="Employee Attendence Report" textFill="#013a63">
                                  <font>
@@ -237,6 +257,9 @@
                                        </image>
                                     </ImageView>
                                  </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </JFXButton>
                            </children>
                         </AnchorPane>

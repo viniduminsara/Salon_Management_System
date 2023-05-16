@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -52,6 +53,9 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
                                 <AnchorPane layoutX="30.0" layoutY="27.0" prefHeight="399.0" prefWidth="509.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                                     <children>
@@ -64,6 +68,7 @@
                                                 <Font name="System Bold" size="24.0" />
                                             </font>
                                         </Label>
+                              <Label fx:id="lblError" alignment="CENTER" layoutX="56.0" layoutY="344.0" prefHeight="21.0" prefWidth="374.0" textFill="RED" />
                                     </children>
                                 </AnchorPane>
                                 <JFXButton graphicTextGap="10.0" layoutX="210.0" layoutY="447.0" onAction="#updateBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #fcbf49; -fx-background-radius: 10px;" text="Update " textFill="WHITE">
@@ -77,6 +82,9 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
                                 <JFXButton graphicTextGap="10.0" layoutX="384.0" layoutY="447.0" onAction="#deleteBtnOnAction" prefHeight="46.0" prefWidth="151.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Delete" textFill="WHITE">
                                     <graphic>
@@ -89,6 +97,9 @@
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </JFXButton>
                         <AnchorPane layoutX="578.0" layoutY="119.0" prefHeight="574.0" prefWidth="601.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                            <children>
@@ -119,6 +130,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                             </children></AnchorPane>
                     </content>
@@ -211,6 +225,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                         <AnchorPane layoutX="25.0" layoutY="335.0" prefHeight="315.0" prefWidth="1149.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                            <children>
@@ -242,6 +259,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                      </children></AnchorPane>
                     </content>

@@ -16,6 +16,7 @@ import lk.ijse.gdse.dto.Supplier;
 import lk.ijse.gdse.dto.tm.SupplierTM;
 import lk.ijse.gdse.model.SupplierModel;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 
 import java.net.URL;
@@ -62,6 +63,9 @@ public class SupplierFormController implements Initializable {
     @FXML
     private TableColumn<?, ?> colAction;
 
+    @FXML
+    private Label lblError;
+
     ObservableList<SupplierTM> data = FXCollections.observableArrayList();
 
     @FXML
@@ -77,8 +81,11 @@ public class SupplierFormController implements Initializable {
                 TxtColours.setDefaultColours(txtSupplierId);
                 if (RegExPatterns.getSupplierId().matcher(txtSupplierId.getText()).matches()) {
                     TxtColours.setDefaultColours(txtSupplierId);
+                    TxtColours.setDefaultColours(txtName);
                     if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
                         TxtColours.setDefaultColours(txtContact);
+                        TxtColours.setDefaultColours(txtAddress);
+                        lblError.setText("");
 
                         String id = txtSupplierId.getText();
                         String name = txtName.getText();
@@ -88,31 +95,43 @@ public class SupplierFormController implements Initializable {
                         try {
                             boolean isSaved = SupplierModel.addSupplier(new Supplier(id, name, contact, address));
                             if (isSaved) {
-                                new Alert(Alert.AlertType.CONFIRMATION, "Supplier has saved!").show();
+                                new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Supplier has saved!",ButtonType.OK).show();
                                 clearTextfields();
                                 populateSupplierTable();
                                 searchFilter();
                             } else {
-                                new Alert(Alert.AlertType.WARNING, "Supplier not saved!").show();
+                                new SystemAlert(Alert.AlertType.WARNING,"Warning","Supplier not saved!",ButtonType.OK).show();
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                            new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                         }
                     }else {
-                        new Alert(Alert.AlertType.WARNING,"Invalid contact number").show();
+                        lblError.setText("Invalid contact number");
                         TxtColours.setErrorColours(txtContact);
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid supplierId").show();
+                    lblError.setText("Invalid supplierId");
                     TxtColours.setErrorColours(txtSupplierId);
                 }
             } else {
-                new Alert(Alert.AlertType.WARNING, "Supplier Id already exists!").show();
+                lblError.setText("Supplier Id is already exists");
                 TxtColours.setErrorColours(txtSupplierId);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+            lblError.setText("Please fill all the details.");
+            if (txtSupplierId.getText().isEmpty()){
+                TxtColours.setErrorColours(txtSupplierId);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtContact.getText().isEmpty()){
+                TxtColours.setErrorColours(txtContact);
+            }
+            if (txtAddress.getText().isEmpty()){
+                TxtColours.setErrorColours(txtAddress);
+            }
         }
     }
 
@@ -129,26 +148,34 @@ public class SupplierFormController implements Initializable {
             ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION, "Are tou sure to delete?", yes, no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are tou sure to delete?",yes,no).showAndWait();
             if (result.orElse(no) == yes) {
                 String id = txtSupplierId.getText();
-                try {
-                    boolean isDeleted = SupplierModel.deleteSupplier(id);
-                    if (isDeleted) {
-                        new Alert(Alert.AlertType.CONFIRMATION, "Supplier has deleted!").show();
-                        clearTextfields();
-                        populateSupplierTable();
-                        searchFilter();
-                    } else {
-                        new Alert(Alert.AlertType.WARNING, "Supplier not deleted!").show();
+                if (RegExPatterns.getSupplierId().matcher(id).matches()) {
+                    TxtColours.setDefaultColours(txtSupplierId);
+                    lblError.setText("");
+                    try {
+                        boolean isDeleted = SupplierModel.deleteSupplier(id);
+                        if (isDeleted) {
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Supplier has deleted!",ButtonType.OK).show();
+                            clearTextfields();
+                            populateSupplierTable();
+                            searchFilter();
+                        } else {
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Supplier not deleted!",ButtonType.OK).show();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                }else {
+                    lblError.setText("Invalid Supplier Id");
+                    TxtColours.setErrorColours(txtSupplierId);
                 }
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please enter the supplierId.").show();
+            lblError.setText("Please enter the supplierId.");
+            TxtColours.setErrorColours(txtSupplierId);
         }
     }
 
@@ -157,8 +184,11 @@ public class SupplierFormController implements Initializable {
         if (!(txtSupplierId.getText().isEmpty() || txtName.getText().isEmpty() || txtContact.getText().isEmpty() || txtAddress.getText().isEmpty())) {
             if (RegExPatterns.getSupplierId().matcher(txtSupplierId.getText()).matches()) {
                 TxtColours.setDefaultColours(txtSupplierId);
+                TxtColours.setDefaultColours(txtName);
                 if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
                     TxtColours.setDefaultColours(txtContact);
+                    TxtColours.setDefaultColours(txtAddress);
+                    lblError.setText("");
 
                     String id = txtSupplierId.getText();
                     String name = txtName.getText();
@@ -168,27 +198,39 @@ public class SupplierFormController implements Initializable {
                     try {
                         boolean isUpdated = SupplierModel.updateSupplier(new Supplier(id, name, contact, address));
                         if (isUpdated) {
-                            new Alert(Alert.AlertType.CONFIRMATION, "Supplier has updated!").show();
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Supplier has updated!",ButtonType.OK).show();
                             clearTextfields();
                             populateSupplierTable();
                             searchFilter();
                         } else {
-                            new Alert(Alert.AlertType.WARNING, "Supplier has not updated!").show();
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Supplier not updated!",ButtonType.OK).show();
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Invalid contact number").show();
+                    lblError.setText("Invalid contact number");
                     TxtColours.setErrorColours(txtContact);
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Invalid supplierId").show();
+                lblError.setText("Invalid supplierId");
                 TxtColours.setErrorColours(txtSupplierId);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please fill all the details.").show();
+            lblError.setText("Please fill all the details.");
+            if (txtSupplierId.getText().isEmpty()){
+                TxtColours.setErrorColours(txtSupplierId);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtContact.getText().isEmpty()){
+                TxtColours.setErrorColours(txtContact);
+            }
+            if (txtAddress.getText().isEmpty()){
+                TxtColours.setErrorColours(txtAddress);
+            }
         }
     }
 
@@ -246,7 +288,7 @@ public class SupplierFormController implements Initializable {
             ResultSet rs = SupplierModel.getAll();
             data.clear();
             while (rs.next()){
-                JFXButton button = new JFXButton("edit",new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\edit-97@30x.png"));
+                JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditBtnOnAction(button);

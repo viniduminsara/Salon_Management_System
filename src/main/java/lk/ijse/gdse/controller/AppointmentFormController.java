@@ -28,6 +28,7 @@ import lk.ijse.gdse.dto.tm.AppointmentTM;
 import lk.ijse.gdse.mail.Mail;
 import lk.ijse.gdse.model.*;
 import lk.ijse.gdse.util.RegExPatterns;
+import lk.ijse.gdse.util.SystemAlert;
 import lk.ijse.gdse.util.TxtColours;
 
 public class AppointmentFormController implements Initializable {
@@ -158,7 +159,7 @@ public class AppointmentFormController implements Initializable {
                     e.printStackTrace();
                     new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
                 }
-                JFXButton button = new JFXButton("delete", new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\trash-can@1.5x.png"));
+                JFXButton button = new JFXButton("delete", new ImageView("img/trash-can@1.5x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setRemoveBtnOnAction(button);
@@ -166,11 +167,11 @@ public class AppointmentFormController implements Initializable {
                 tblCart.setItems(cart);
                 clearComponents();
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please enter correct qty").show();
+                new SystemAlert(Alert.AlertType.WARNING,"Warning","Please enter correct qty",ButtonType.OK).show();
                 TxtColours.setErrorColours(txtQty);
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please select all the requirements!").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Please select all the requirements!",ButtonType.OK).show();
         }
     }
 
@@ -208,7 +209,7 @@ public class AppointmentFormController implements Initializable {
                     try {
                         boolean isPlaced = PlaceAppointmentModel.placeAppointment(appointmentId, date, time, customerId, services, employees, inventoryList);
                         if (isPlaced) {
-                            new Alert(Alert.AlertType.CONFIRMATION, "Appointment has placed!").show();
+                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Appointment has placed!",ButtonType.OK).show();
                             sendMail(customerId, date, time);
                             clearAppointment();
                             generateAppointmentId();
@@ -218,20 +219,20 @@ public class AppointmentFormController implements Initializable {
                             setEmployees();
                             setInventory();
                         } else {
-                            new Alert(Alert.AlertType.WARNING, "Appointment has not placed!").show();
+                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Appointment has not placed!",ButtonType.OK).show();
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    new Alert(Alert.AlertType.WARNING,"Please select correct date!").show();
+                    new SystemAlert(Alert.AlertType.WARNING,"Warning","Please select correct date!",ButtonType.OK).show();
                 }
             }else {
-                new Alert(Alert.AlertType.WARNING,"Please fill all details of appointment.").show();
+                new SystemAlert(Alert.AlertType.WARNING,"Warning","Please fill all details of appointment.",ButtonType.OK).show();
             }
         }else {
-            new Alert(Alert.AlertType.WARNING,"Please select requirements for appointment.").show();
+            new SystemAlert(Alert.AlertType.WARNING,"Warning","Please select requirements for appointment.",ButtonType.OK).show();
         }
     }
 
@@ -263,16 +264,16 @@ public class AppointmentFormController implements Initializable {
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
         String subject = "Appointment placed 😊";
-        String message = "Appointment has placed on <b>"+day+"</b> at <b>"+time+"</b>. You can cancel appointment by contact us.";
+        String message = "Appointment has placed on "+day+" at "+time+". You can cancel appointment by contact us.";
 
         Mail mail = new Mail(email,subject,message);
         Thread thread = new Thread(mail);
 
         mail.valueProperty().addListener((a, oldValue, newValue) -> {
             if (newValue){
-                new Alert(Alert.AlertType.CONFIRMATION,"Mail sent successfully").show();
+                new SystemAlert(Alert.AlertType.INFORMATION,"Email","Mail sent successfully",ButtonType.OK).show();
             }else {
-                new Alert(Alert.AlertType.WARNING,"Connection failed - can't send the mail").show();
+                new SystemAlert(Alert.AlertType.NONE,"Connection Error","Connection Error!",ButtonType.OK).show();
             }
         });
 
@@ -319,7 +320,7 @@ public class AppointmentFormController implements Initializable {
                 if (rs.getString(5).equals("Canceled") || rs.getString(5).equals("Completed")){
                     appointment.add(new AppointmentTM(rs.getString(1),rs.getString(2),rs.getDate(3),rs.getString(4),rs.getString(5),new JFXButton()));
                 }else {
-                    JFXButton button = new JFXButton("cancel", new ImageView("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\cancel@1.5x.png"));
+                    JFXButton button = new JFXButton("cancel", new ImageView("img/cancel@1.5x.png"));
                     button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     button.getStyleClass().add("infoBtn");
                     setCancelBtnOnAction(button);
@@ -344,19 +345,19 @@ public class AppointmentFormController implements Initializable {
             ButtonType yes = new ButtonType("Yes",ButtonBar.ButtonData.OK_DONE);
             ButtonType no = new ButtonType("No",ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION,"Do you want to cancel '"+colAppointmentId.getCellData(index)+"' appointment?",yes,no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Do you want to cancel '"+colAppointmentId.getCellData(index)+"' appointment?",yes,no).showAndWait();
             if (result.orElse(no) == yes){
                 String id = String.valueOf(colAppointmentId.getCellData(index));
                 try {
                     boolean isCanceled = AppointmentModel.cancelAppointment(id);
                     if (isCanceled){
-                        new Alert(Alert.AlertType.CONFIRMATION,"Appointment '"+id+"' was canceled").show();
+                        new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Appointment '"+id+"' was canceled",ButtonType.OK).show();
                         populateAppointmentTable();
                         searchFilter();
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                    new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+                    new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                 }
             }
         });
@@ -380,7 +381,7 @@ public class AppointmentFormController implements Initializable {
             ButtonType yes = new ButtonType("Yes",ButtonBar.ButtonData.OK_DONE);
             ButtonType no = new ButtonType("No",ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new Alert(Alert.AlertType.INFORMATION,"Are you sure to remove '"+colService.getCellData(index)+"' service?",yes,no).showAndWait();
+            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to remove '"+colService.getCellData(index)+"' service?",yes,no).showAndWait();
 
             if (result.orElse(no) == yes) {
                 services.add(String.valueOf(colService.getCellData(index)));
