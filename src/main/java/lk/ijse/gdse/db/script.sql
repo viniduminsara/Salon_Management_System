@@ -9,7 +9,8 @@ CREATE TABLE user(
     type VARCHAR(20) NOT NULL,
     gmail VARCHAR(30) NOT NULL ,
     password VARCHAR(20) NOT NULL,
-    image LONGBLOB
+    image longblob null,
+    receipt_folder varchar(300) null
 )
 
 CREATE TABLE customer(

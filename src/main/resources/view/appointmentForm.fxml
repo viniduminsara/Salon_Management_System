@@ -6,6 +6,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -78,6 +79,9 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </JFXButton>
                         <AnchorPane layoutX="589.0" layoutY="123.0" prefHeight="511.0" prefWidth="605.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
                            <children>

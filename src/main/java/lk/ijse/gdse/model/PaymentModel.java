@@ -61,7 +61,7 @@ public class PaymentModel {
     public static ObservableList<PaymentTM> getAll() throws SQLException {
         String query = "SELECT paymentId,date,fullName,amount FROM payment\n" +
                 "join user on user.userId = payment.userId\n" +
-                "ORDER BY paymentId";
+                "ORDER BY paymentId DESC";
         ResultSet rs =  CrudUtil.execute(query);
         ObservableList<PaymentTM> payment = FXCollections.observableArrayList();
         while (rs.next()){

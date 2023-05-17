@@ -1,6 +1,5 @@
 package lk.ijse.gdse.model;
 
-import lk.ijse.gdse.db.DBConnection;
 import lk.ijse.gdse.dto.User;
 import lk.ijse.gdse.util.CrudUtil;
 
@@ -47,7 +46,7 @@ public class UserModel {
             if (blob != null) {
                 inputStream = blob.getBinaryStream();
             }else {
-                inputStream = new FileInputStream("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\images.png");
+                inputStream = new FileInputStream("src/main/resources/img/images.png");
             }
             return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream);
         }
@@ -71,7 +70,7 @@ public class UserModel {
             if (rs.getBlob(1) != null) {
                 return rs.getBlob(1).getBinaryStream();
             }else {
-                return new FileInputStream("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\images.png");
+                return new FileInputStream("src/main/resources/img/images.png");
             }
         }
         return null;
@@ -86,7 +85,7 @@ public class UserModel {
             if (blob != null) {
                 inputStream = blob.getBinaryStream();
             } else {
-                inputStream = new FileInputStream("F:\\1st semester final project\\moods salon\\src\\main\\resources\\img\\images.png");
+                inputStream = new FileInputStream("src/main/resources/img/images.png");
             }
             return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream);
         }
@@ -96,5 +95,19 @@ public class UserModel {
     public static boolean updatePassword(String id, String newPassword) throws SQLException {
         String query = "UPDATE user SET password = ? WHERE userId = ?";
         return CrudUtil.execute(query,newPassword,id);
+    }
+
+    public static boolean saveFilePath(String filePath, String userId) throws SQLException {
+        String query = "UPDATE user SET receipt_folder = ? WHERE userId = ?";
+        return CrudUtil.execute(query,filePath,userId);
+    }
+
+    public static String getFilePath(String userId) throws SQLException {
+        String query = "SELECT receipt_folder FROM user WHERE userId = ?";
+        ResultSet rs = CrudUtil.execute(query,userId);
+        if (rs.next()){
+            return rs.getString(1);
+        }
+        return null;
     }
 }

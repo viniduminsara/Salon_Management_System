@@ -101,6 +101,7 @@ public class AdminDashboardFormController implements Initializable {
         pane.getChildren().add(loader.load());
         PaymentFormController controller = loader.getController();
         controller.setUser(user);
+        controller.getFilePath();
     }
 
     @FXML
