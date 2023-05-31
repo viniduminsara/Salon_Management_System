@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="590.0" prefWidth="600.0" style="-fx-background-color: #e9ecef;" stylesheets="@../style/progressbar.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.gdse.controller.QRScanFormController">
+<AnchorPane prefHeight="590.0" prefWidth="600.0" style="-fx-background-color: #e9ecef;" stylesheets="@../style/progressbar.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.moods_salon.controller.QRScanFormController">
    <children>
       <AnchorPane fx:id="pane" layoutX="35.0" layoutY="33.0" prefHeight="364.0" prefWidth="525.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15px;">
          <children>
@@ -19,11 +20,17 @@
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <JFXButton fx:id="btnStop" layoutX="408.0" layoutY="490.0" onAction="#stopBtnOnAction" prefHeight="45.0" prefWidth="125.0" style="-fx-background-color: #e76f51; -fx-background-radius: 10px;" text="Stop" textFill="WHITE">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <Label layoutX="130.0" layoutY="423.0" prefHeight="33.0" prefWidth="102.0" text="Employee :">
          <font>

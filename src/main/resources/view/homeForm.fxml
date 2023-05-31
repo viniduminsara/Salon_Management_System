@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1205.0" style="-fx-background-color: #e9ecef;" stylesheets="@../style/dashboard.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.gdse.controller.HomeFormController">
+<AnchorPane prefHeight="800.0" prefWidth="1205.0" style="-fx-background-color: #e9ecef;" stylesheets="@../style/dashboard.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.moods_salon.controller.HomeFormController">
    <children>
       <Group layoutX="416.0" layoutY="87.0">
          <children>
@@ -104,6 +104,16 @@
                   <TableColumn fx:id="colEmployee" prefWidth="159.0" text="Customer" />
               </columns>
             </TableView>
+            <ImageView fx:id="image" fitHeight="112.0" fitWidth="257.0" layoutX="134.0" layoutY="142.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../img/Sleeping-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="lblTable" layoutX="160.0" layoutY="261.0" text="No Upcoming Appointments " textFill="#013a63">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
          </children></AnchorPane>
       <Label layoutX="31.0" layoutY="29.0" prefHeight="38.0" prefWidth="233.0" text="Dashboard" textFill="#013a63">
          <font>
