@@ -230,7 +230,7 @@ public class PaymentFormController implements Initializable {
 
     private void generateReceipt(String paymentId,String appointmentId) {
         try {
-            JasperDesign design = JRXmlLoader.load("src/main/java/lk/ijse/gdse/report/paymentReceipt.jrxml");
+            JasperDesign design = JRXmlLoader.load("src/main/java/lk/ijse/moods_salon/report/paymentReceipt.jrxml");
             JasperReport report = JasperCompileManager.compileReport(design);
             HashMap<String, Object> map = new HashMap();
             map.put("parameterPaymentId", paymentId);

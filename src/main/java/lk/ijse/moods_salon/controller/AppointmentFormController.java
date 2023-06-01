@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-import lk.ijse.moods_salon.dto.AppointmentInventoryDTO;
+import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
 import lk.ijse.moods_salon.dto.tm.AppointmentCartTM;
 import lk.ijse.moods_salon.dto.tm.AppointmentTM;
 import lk.ijse.moods_salon.mail.Mail;
@@ -187,7 +187,7 @@ public class AppointmentFormController implements Initializable {
 
                     List<String> services = new ArrayList<>();
                     List<String> employees = new ArrayList<>();
-                    List<AppointmentInventoryDTO> inventoryList = new ArrayList<>();
+                    List<Inventory_detailsDTO> inventoryList = new ArrayList<>();
 
                     for (int i = 0; i < tblCart.getItems().size(); i++) {
                         AppointmentCartTM cartTM = tblCart.getItems().get(i);
@@ -199,7 +199,7 @@ public class AppointmentFormController implements Initializable {
                             employees.add(employeeId);
 
                             String inventoryId = InventoryModel.getInventoryId(cartTM.getInventory());
-                            inventoryList.add(new AppointmentInventoryDTO(appointmentId, inventoryId, cartTM.getQty()));
+                            inventoryList.add(new Inventory_detailsDTO(appointmentId, inventoryId, cartTM.getQty()));
                         } catch (SQLException e) {
                             e.printStackTrace();
                             new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();

@@ -1,4 +1,4 @@
-package lk.ijse.moods_salon.dto;
+package lk.ijse.moods_salon.entity;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 
-public class AppointmentInventoryDTO {
+public class Inventory_details {
     private String appointmentId;
     private String inventoryId;
     private Integer usedQty;

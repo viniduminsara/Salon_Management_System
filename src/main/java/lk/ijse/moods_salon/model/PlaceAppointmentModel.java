@@ -1,7 +1,7 @@
 package lk.ijse.moods_salon.model;
 
 import lk.ijse.moods_salon.db.DBConnection;
-import lk.ijse.moods_salon.dto.AppointmentInventoryDTO;
+import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class PlaceAppointmentModel {
-    public static boolean placeAppointment(String appointmentId, Date date, String time, String customerId, List<String> services, List<String> employees, List<AppointmentInventoryDTO> inventoryList) throws SQLException {
+    public static boolean placeAppointment(String appointmentId, Date date, String time, String customerId, List<String> services, List<String> employees, List<Inventory_detailsDTO> inventoryList) throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
 
         try {

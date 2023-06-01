@@ -16,7 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.InventoryDTO;
-import lk.ijse.moods_salon.dto.OrderItemDetailDTO;
+import lk.ijse.moods_salon.dto.Inventory_order_detailDTO;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.dto.tm.InventoryOrderTM;
 import lk.ijse.moods_salon.dto.tm.InventoryTM;
@@ -427,9 +427,9 @@ public class InventoryFormController implements Initializable {
     void placeOrderBtnOnAction(ActionEvent event) {
         if (!(cmbSupplierId.getSelectionModel().getSelectedItem() == null || OrderDate.getValue() == null)) {
             if (tblCart.getItems().size() != 0) {
-                ArrayList<OrderItemDetailDTO> items = new ArrayList<>();
+                ArrayList<Inventory_order_detailDTO> items = new ArrayList<>();
                 for (OrderCartTM cartItem : cart) {
-                    items.add(new OrderItemDetailDTO(cartItem.getInventoryId(), cartItem.getQty()));
+                    items.add(new Inventory_order_detailDTO(cartItem.getInventoryId(), cartItem.getQty()));
                 }
                 String orderId = lblOrderId.getText();
                 Date date = Date.from(OrderDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -467,7 +467,7 @@ public class InventoryFormController implements Initializable {
     void reportBtnOnction(ActionEvent event) {
         new Thread(() -> {
             try {
-                JasperDesign design = JRXmlLoader.load(new File("src/main/java/lk/ijse/gdse/report/inventory.jrxml"));
+                JasperDesign design = JRXmlLoader.load(new File("src/main/java/lk/ijse/moods_salon/report/inventory.jrxml"));
                 JasperReport report = JasperCompileManager.compileReport(design);
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, DBConnection.getInstance().getConnection());
                 //            JasperPrintManager.printReport(jasperPrint, true);

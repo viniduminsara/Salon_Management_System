@@ -2,9 +2,9 @@ package lk.ijse.moods_salon.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import lk.ijse.moods_salon.dto.AppointmentInventoryDTO;
+import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
 import lk.ijse.moods_salon.dto.InventoryDTO;
-import lk.ijse.moods_salon.dto.OrderItemDetailDTO;
+import lk.ijse.moods_salon.dto.Inventory_order_detailDTO;
 import lk.ijse.moods_salon.util.CrudUtil;
 
 import java.sql.ResultSet;
@@ -58,8 +58,8 @@ public class InventoryModel {
         return null;
     }
 
-    public static boolean updateQty(List<AppointmentInventoryDTO> inventoryList) throws SQLException {
-        for (AppointmentInventoryDTO item : inventoryList) {
+    public static boolean updateQty(List<Inventory_detailsDTO> inventoryList) throws SQLException {
+        for (Inventory_detailsDTO item : inventoryList) {
             if (!update(item)){
                 return false;
             }
@@ -67,7 +67,7 @@ public class InventoryModel {
         return true;
     }
 
-    private static boolean update(AppointmentInventoryDTO item) throws SQLException {
+    private static boolean update(Inventory_detailsDTO item) throws SQLException {
         String query = "UPDATE inventory SET qtyOnHand = (qtyOnHand - ?) WHERE inventoryId = ?";
         return CrudUtil.execute(query,item.getUsedQty(),item.getInventoryId());
     }
@@ -100,8 +100,8 @@ public class InventoryModel {
         return null;
     }
 
-    public static boolean updateOrderQty(ArrayList<OrderItemDetailDTO> items) throws SQLException {
-        for (OrderItemDetailDTO inventory : items) {
+    public static boolean updateOrderQty(ArrayList<Inventory_order_detailDTO> items) throws SQLException {
+        for (Inventory_order_detailDTO inventory : items) {
             if (!updateQty(inventory)){
                 return false;
             }
@@ -109,7 +109,7 @@ public class InventoryModel {
         return true;
     }
 
-    private static boolean updateQty(OrderItemDetailDTO inventory) throws SQLException {
+    private static boolean updateQty(Inventory_order_detailDTO inventory) throws SQLException {
         String query = "UPDATE inventory SET qtyOnHand = (qtyOnHand + ?) WHERE inventoryId = ?";
         return CrudUtil.execute(query,inventory.getQty(),inventory.getInventoryId());
     }
