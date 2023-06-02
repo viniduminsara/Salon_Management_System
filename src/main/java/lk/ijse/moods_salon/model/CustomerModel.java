@@ -7,7 +7,6 @@ import lk.ijse.moods_salon.util.CrudUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomerModel {
 
@@ -70,10 +69,10 @@ public class CustomerModel {
         return false;
     }
 
-    public static List<String> getEmails() throws SQLException {
+    public static ArrayList<String> getEmails() throws SQLException {
         String query = "SELECT gmail FROM customer ORDER BY customerId";
         ResultSet rs = CrudUtil.execute(query);
-        List<String> email = new ArrayList<>();
+        ArrayList<String> email = new ArrayList<>();
         while (rs.next()){
             email.add(rs.getString(1));
         }

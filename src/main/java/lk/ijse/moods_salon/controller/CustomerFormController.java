@@ -13,16 +13,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import lk.ijse.moods_salon.bo.custom.CustomerBO;
+import lk.ijse.moods_salon.bo.custom.impl.CustomerBOImpl;
 import lk.ijse.moods_salon.dto.CustomerDTO;
 import lk.ijse.moods_salon.dto.tm.CustomerTM;
 import lk.ijse.moods_salon.mail.Mail;
-import lk.ijse.moods_salon.model.CustomerModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
 
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -79,6 +79,8 @@ public class CustomerFormController implements Initializable {
 
     ObservableList<CustomerTM> data = FXCollections.observableArrayList();
 
+    CustomerBO customerBO = new CustomerBOImpl();
+
     @FXML
     private ProgressBar progress;
 
@@ -89,21 +91,21 @@ public class CustomerFormController implements Initializable {
     void addCustomerBtnOnAction(ActionEvent event) {
         boolean isExists = false;
         try {
-            isExists = CustomerModel.findExists(txtCustomerId.getText());
+            isExists = customerBO.existsCustomer(txtCustomerId.getText());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (!isExists) {
-            TxtColours.setDefaultColours(txtCustomerId);
-            if (!(txtCustomerId.getText().isEmpty() || txtCustomerName.getText().isEmpty() || txtGmail.getText().isEmpty() || txtContact.getText().isEmpty() || txtAddress.getText().isEmpty())) {
-                if (RegExPatterns.getCustomerId().matcher(txtCustomerId.getText()).matches()) {
-                    TxtColours.setDefaultColours(txtCustomerId);
-                    TxtColours.setDefaultColours(txtCustomerName);
-                    TxtColours.setDefaultColours(txtAddress);
-                    if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
-                        TxtColours.setDefaultColours(txtContact);
-                        if (RegExPatterns.getEmailPattern().matcher(txtGmail.getText()).matches()) {
-                            TxtColours.setDefaultColours(txtGmail);
+        if (!(txtCustomerId.getText().isEmpty() || txtCustomerName.getText().isEmpty() || txtGmail.getText().isEmpty() || txtContact.getText().isEmpty() || txtAddress.getText().isEmpty())) {
+            if (RegExPatterns.getCustomerId().matcher(txtCustomerId.getText()).matches()) {
+                TxtColours.setDefaultColours(txtCustomerId);
+                TxtColours.setDefaultColours(txtCustomerName);
+                TxtColours.setDefaultColours(txtAddress);
+                if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
+                    TxtColours.setDefaultColours(txtContact);
+                    if (RegExPatterns.getEmailPattern().matcher(txtGmail.getText()).matches()) {
+                        TxtColours.setDefaultColours(txtGmail);
+                        if (!isExists) {
+                            TxtColours.setDefaultColours(txtCustomerId);
                             lblerror.setText("");
 
                             String id = txtCustomerId.getText();
@@ -113,7 +115,7 @@ public class CustomerFormController implements Initializable {
                             String address = txtAddress.getText();
 
                             try {
-                                boolean isSaved = CustomerModel.addCustomer(new CustomerDTO(id, name, gmail, contact, address));
+                                boolean isSaved = customerBO.addCustomer(new CustomerDTO(id, name, gmail, contact, address));
                                 if (isSaved) {
                                     new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Customer saved!",ButtonType.OK).show();
                                     populateCustomerTable();
@@ -127,82 +129,93 @@ public class CustomerFormController implements Initializable {
                                 new SystemAlert(Alert.AlertType.ERROR,"Error","Somehing went wrong!",ButtonType.OK).show();
                             }
                         }else {
-                            lblerror.setText("Invalid gmail.");
-                            TxtColours.setErrorColours(txtGmail);
-
+                            lblerror.setText("Customer Id is already exists!");
+                            TxtColours.setErrorColours(txtCustomerId);
                         }
                     }else {
-                        lblerror.setText("Invalid contact number");
-                        TxtColours.setErrorColours(txtContact);
+                        lblerror.setText("Invalid gmail.");
+                        TxtColours.setErrorColours(txtGmail);
+
                     }
                 }else {
-                    lblerror.setText("Invalid customerId.");
-                    TxtColours.setErrorColours(txtCustomerId);
-                }
-            }else {
-                lblerror.setText("Fill all the details");
-                if (txtCustomerId.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtCustomerId);
-                }
-                if (txtCustomerName.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtCustomerName);
-                }
-                if (txtAddress.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtAddress);
-                }
-                if (txtContact.getText().isEmpty()){
+                    lblerror.setText("Invalid contact number");
                     TxtColours.setErrorColours(txtContact);
                 }
-                if (txtGmail.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtGmail);
-                }
+            }else {
+                lblerror.setText("Invalid customerId.");
+                TxtColours.setErrorColours(txtCustomerId);
             }
         }else {
-            lblerror.setText("Customer Id is already exists!");
-            TxtColours.setErrorColours(txtCustomerId);
+            lblerror.setText("Fill all the details");
+            if (txtCustomerId.getText().isEmpty()){
+                TxtColours.setErrorColours(txtCustomerId);
+            }
+            if (txtCustomerName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtCustomerName);
+            }
+            if (txtAddress.getText().isEmpty()){
+                TxtColours.setErrorColours(txtAddress);
+            }
+            if (txtContact.getText().isEmpty()){
+                TxtColours.setErrorColours(txtContact);
+            }
+            if (txtGmail.getText().isEmpty()){
+                TxtColours.setErrorColours(txtGmail);
+            }
         }
     }
 
     private void clearTextfields() {
-        txtCustomerId.setText("");
-        txtCustomerName.setText("");
-        txtGmail.setText("");
-        txtContact.setText("");
-        txtAddress.setText("");
+        txtCustomerId.clear();
+        txtCustomerName.clear();
+        txtGmail.clear();
+        txtContact.clear();
+        txtAddress.clear();
     }
 
     @FXML
     void deleteCustomerBtnOnAction(ActionEvent event) {
         if (!txtCustomerId.getText().isEmpty()) {
-        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
-
-        if (result.orElse(no) == yes) {
             String id = txtCustomerId.getText();
             if (RegExPatterns.getCustomerId().matcher(id).matches()) {
-                TxtColours.setDefaultColours(txtCustomerId);
-                lblerror.setText("");
-                try {
-                    boolean isDeleted = CustomerModel.deleteCustomer(id);
-                    if (isDeleted) {
-                        new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Customer deleted!",ButtonType.OK).show();
-                        clearTextfields();
-                        populateCustomerTable();
-                        searchFilter();
-                    } else {
-                        new SystemAlert(Alert.AlertType.WARNING,"Warning","Customer not deleted!",ButtonType.OK).show();
+                ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
+
+                if (result.orElse(no) == yes) {
+                    boolean isExists = false;
+                    try {
+                        isExists = customerBO.existsCustomer(txtCustomerId.getText());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    new SystemAlert(Alert.AlertType.ERROR,"Error","Somehing went wrong!",ButtonType.OK).show();
+                    if (isExists) {
+                        TxtColours.setDefaultColours(txtCustomerId);
+                        lblerror.setText("");
+                        try {
+                            boolean isDeleted = customerBO.deleteCustomer(id);
+                            if (isDeleted) {
+                                new SystemAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Customer deleted!", ButtonType.OK).show();
+                                clearTextfields();
+                                populateCustomerTable();
+                                searchFilter();
+                            } else {
+                                new SystemAlert(Alert.AlertType.WARNING, "Warning", "Customer not deleted!", ButtonType.OK).show();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            new SystemAlert(Alert.AlertType.ERROR, "Error", "Somehing went wrong!", ButtonType.OK).show();
+                        }
+                    }else {
+                        lblerror.setText("No customer found");
+                        TxtColours.setErrorColours(txtCustomerId);
+                    }
                 }
             }else {
                 lblerror.setText("Invalid customer id");
                 TxtColours.setErrorColours(txtCustomerId);
             }
-        }
         }else {
             lblerror.setText("Please enter the customer id");
             TxtColours.setErrorColours(txtCustomerId);
@@ -230,7 +243,7 @@ public class CustomerFormController implements Initializable {
                         String address = txtAddress.getText();
 
                         try {
-                            boolean isUpdated = CustomerModel.updateCustomer(new CustomerDTO(id, name, gmail, contact, address));
+                            boolean isUpdated = customerBO.updateCustomer(new CustomerDTO(id, name, gmail, contact, address));
                             if (isUpdated) {
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Customer updated!",ButtonType.OK).show();
                                 clearTextfields();
@@ -278,7 +291,7 @@ public class CustomerFormController implements Initializable {
 
     @FXML
     void searchCancelBtnOnAction(ActionEvent event) {
-        txtsearch.setText("");
+        txtsearch.clear();
         searchCancelBtn.setVisible(false);
     }
 
@@ -286,9 +299,9 @@ public class CustomerFormController implements Initializable {
     void sendBtnOnAction(ActionEvent event) {
         if (!(txtSubject.getText().isEmpty() || txtMessage.getText().isEmpty())) {
 
-            List<String> emails = new ArrayList<>();
+            ArrayList<String> emails = new ArrayList<>();
             try {
-                emails = CustomerModel.getEmails();
+                emails = customerBO.getEmails();
             } catch (SQLException e) {
                 e.printStackTrace();
                 new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
@@ -302,8 +315,8 @@ public class CustomerFormController implements Initializable {
             mail.valueProperty().addListener((a, oldValue, newValue) -> {
                 if (newValue){
                     new SystemAlert(Alert.AlertType.INFORMATION,"Email","Announcement was sent!",ButtonType.OK).show();
-                    txtSubject.setText("");
-                    txtMessage.setText("");
+                    txtSubject.clear();
+                    txtMessage.clear();
                 }else {
                     new SystemAlert(Alert.AlertType.NONE,"Connection Error","Connection Error!",ButtonType.OK).show();
                 }
@@ -362,19 +375,19 @@ public class CustomerFormController implements Initializable {
 
     private void populateCustomerTable() {
         try {
-            ResultSet rs = CustomerModel.getAllCustomers();
+            ArrayList<CustomerDTO> customers = customerBO.getAllCustomers();
                 data.clear();
-                while (rs.next()) {
+                for (CustomerDTO customer : customers) {
                     JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                     button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     button.getStyleClass().add("infoBtn");
                     setButtonOnAction(button);
-                    data.add(new CustomerTM(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), button));
+                    data.add(new CustomerTM(customer.getCustomerId(), customer.getName(), customer.getGmail(), customer.getContact(), customer.getAddress(), button));
                 }
                 tblCustomer.setItems(data);
         } catch (SQLException e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR,"Someyhing went wrong!").show();
+            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
     }
 

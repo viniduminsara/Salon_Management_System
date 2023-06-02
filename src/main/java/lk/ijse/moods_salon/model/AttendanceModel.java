@@ -10,6 +10,7 @@ import lk.ijse.moods_salon.util.CrudUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class AttendanceModel {
 
@@ -35,7 +36,7 @@ public class AttendanceModel {
         return "Att001";
     }
 
-    public static boolean saveAttendance(ObservableList<AttendanceDTO> attendances) throws SQLException {
+    public static boolean saveAttendance(ArrayList<AttendanceDTO> attendances) throws SQLException {
         for (AttendanceDTO attend : attendances) {
             attend.setAttendanceId(AttendanceModel.generateId());
             if (!save(attend)){

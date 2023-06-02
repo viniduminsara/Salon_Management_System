@@ -19,14 +19,13 @@ import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import lk.ijse.moods_salon.bo.custom.EmployeeBO;
+import lk.ijse.moods_salon.bo.custom.impl.EmployeeBOImpl;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.AttendanceDTO;
 import lk.ijse.moods_salon.dto.EmployeeDTO;
 import lk.ijse.moods_salon.dto.tm.AttendanceTM;
 import lk.ijse.moods_salon.dto.tm.EmployeeTM;
-import lk.ijse.moods_salon.dto.tm.MarkAttendanceTM;
-import lk.ijse.moods_salon.model.AttendanceModel;
-import lk.ijse.moods_salon.model.EmployeeModel;
 import lk.ijse.moods_salon.qr.QRGenerator;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
@@ -39,14 +38,10 @@ import net.sf.jasperreports.view.JasperViewer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class EmployeeFormController implements Initializable {
@@ -94,7 +89,7 @@ public class EmployeeFormController implements Initializable {
     private TableColumn<?, ?> colAction;
 
     @FXML
-    private TableView<MarkAttendanceTM> tblMarkAttendence;
+    private TableView<AttendanceTM> tblMarkAttendence;
 
     @FXML
     private TableColumn<?, String> colEmpId;
@@ -146,30 +141,33 @@ public class EmployeeFormController implements Initializable {
 
     ObservableList<EmployeeTM> data = FXCollections.observableArrayList();
 
-    ObservableList<MarkAttendanceTM> employees = FXCollections.observableArrayList();
+    ObservableList<AttendanceTM> employees = FXCollections.observableArrayList();
+
+    EmployeeBO employeeBO = new EmployeeBOImpl();
 
     @FXML
     void addBtnOnAction(ActionEvent event) {
         boolean isExists = false;
         try {
-            isExists = EmployeeModel.findIfExists(txtEmployeeId.getText());
+            isExists = employeeBO.existsEmployee(txtEmployeeId.getText());
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong").show();
         }
-        if (!isExists) {
-            TxtColours.setDefaultColours(txtEmployeeId);
-            if (!(txtEmployeeId.getText().isEmpty() || txtName.getText().isEmpty() || txtAddress.getText().isEmpty() || txtContact.getText().isEmpty() || txtJobRole.getText().isEmpty() || txtSalary.getText().isEmpty())) {
-                if (RegExPatterns.getEmployeeId().matcher(txtEmployeeId.getText()).matches()) {
-                    TxtColours.setDefaultColours(txtEmployeeId);
-                    if (RegExPatterns.getNamePattern().matcher(txtName.getText()).matches()) {
-                        TxtColours.setDefaultColours(txtName);
-                        if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
-                            TxtColours.setDefaultColours(txtContact);
-                            TxtColours.setDefaultColours(txtAddress);
-                            TxtColours.setDefaultColours(txtJobRole);
-                            if (RegExPatterns.getDoublePattern().matcher(txtSalary.getText()).matches()) {
-                                TxtColours.setDefaultColours(txtSalary);
+
+        if (!(txtEmployeeId.getText().isEmpty() || txtName.getText().isEmpty() || txtAddress.getText().isEmpty() || txtContact.getText().isEmpty() || txtJobRole.getText().isEmpty() || txtSalary.getText().isEmpty())) {
+            if (RegExPatterns.getEmployeeId().matcher(txtEmployeeId.getText()).matches()) {
+                TxtColours.setDefaultColours(txtEmployeeId);
+                if (RegExPatterns.getNamePattern().matcher(txtName.getText()).matches()) {
+                    TxtColours.setDefaultColours(txtName);
+                    if (RegExPatterns.getContactPattern().matcher(txtContact.getText()).matches()) {
+                        TxtColours.setDefaultColours(txtContact);
+                        TxtColours.setDefaultColours(txtAddress);
+                        TxtColours.setDefaultColours(txtJobRole);
+                        if (RegExPatterns.getDoublePattern().matcher(txtSalary.getText()).matches()) {
+                            TxtColours.setDefaultColours(txtSalary);
+                            if (!isExists) {
+                                TxtColours.setDefaultColours(txtEmployeeId);
                                 lblError.setText("");
 
                                 String id = txtEmployeeId.getText();
@@ -180,7 +178,7 @@ public class EmployeeFormController implements Initializable {
                                 Double salary = Double.valueOf(txtSalary.getText());
 
                                 try {
-                                    boolean isSaved = EmployeeModel.addEmployee(new EmployeeDTO(id, name, address, contact, jobRole, salary));
+                                    boolean isSaved = employeeBO.addEmployee(new EmployeeDTO(id, name, address, contact, jobRole, salary));
                                     if (isSaved) {
                                         new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee saved!",ButtonType.OK).show();
                                         clearTextFields();
@@ -193,46 +191,46 @@ public class EmployeeFormController implements Initializable {
                                     e.printStackTrace();
                                     new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                                 }
-                            }else {
-                                lblError.setText("Please enter double value for salary.");
-                                TxtColours.setErrorColours(txtSalary);
+                            }else{
+                                lblError.setText("Employee Id is already exists!");
+                                TxtColours.setErrorColours(txtEmployeeId);
                             }
                         }else {
-                            lblError.setText("Invalid contact number");
-                            TxtColours.setErrorColours(txtContact);
+                            lblError.setText("Please enter double value for salary.");
+                            TxtColours.setErrorColours(txtSalary);
                         }
                     }else {
-                        lblError.setText("Invalid name.");
-                        TxtColours.setErrorColours(txtName);
+                        lblError.setText("Invalid contact number");
+                        TxtColours.setErrorColours(txtContact);
                     }
                 }else {
-                    lblError.setText("Invalid employeeId.");
-                    TxtColours.setErrorColours(txtEmployeeId);
-                }
-            }else {
-                lblError.setText("Please fill all the details.");
-                if (txtEmployeeId.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtEmployeeId);
-                }
-                if (txtName.getText().isEmpty()){
+                    lblError.setText("Invalid name.");
                     TxtColours.setErrorColours(txtName);
                 }
-                if (txtContact.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtContact);
-                }
-                if (txtAddress.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtAddress);
-                }
-                if (txtJobRole.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtJobRole);
-                }
-                if (txtSalary.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtSalary);
-                }
+            }else {
+                lblError.setText("Invalid employeeId.");
+                TxtColours.setErrorColours(txtEmployeeId);
             }
-        }else{
-            lblError.setText("Employee Id is already exists!");
-            TxtColours.setErrorColours(txtEmployeeId);
+        }else {
+            lblError.setText("Please fill all the details.");
+            if (txtEmployeeId.getText().isEmpty()){
+                TxtColours.setErrorColours(txtEmployeeId);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtContact.getText().isEmpty()){
+                TxtColours.setErrorColours(txtContact);
+            }
+            if (txtAddress.getText().isEmpty()){
+                TxtColours.setErrorColours(txtAddress);
+            }
+            if (txtJobRole.getText().isEmpty()){
+                TxtColours.setErrorColours(txtJobRole);
+            }
+            if (txtSalary.getText().isEmpty()){
+                TxtColours.setErrorColours(txtSalary);
+            }
         }
     }
 
@@ -249,35 +247,48 @@ public class EmployeeFormController implements Initializable {
     void deleteBtnOnAction(ActionEvent event) {
 
         if (!txtEmployeeId.getText().isEmpty()) {
-            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            if (RegExPatterns.getEmployeeId().matcher(txtEmployeeId.getText()).matches()) {
+                boolean isExists = false;
+                try {
+                    isExists = employeeBO.existsEmployee(txtEmployeeId.getText());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    new Alert(Alert.AlertType.ERROR,"Something went wrong").show();
+                }
+                if (isExists) {
+                    ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
+                    Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION, "Information", "Are you sure to delete ?", yes, no).showAndWait();
 
-            if (result.orElse(no) == yes) {
-                String id = txtEmployeeId.getText();
-                if (RegExPatterns.getEmployeeId().matcher(id).matches()) {
-                    TxtColours.setDefaultColours(txtEmployeeId);
-                    lblError.setText("");
+                    String id = txtEmployeeId.getText();
 
-                    try {
-                        boolean isDeleted = EmployeeModel.deleteEmployee(id);
-                        if (isDeleted) {
-                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee has deleted!",ButtonType.OK).show();
-                            clearTextFields();
-                            populateEmployeeTable();
-                            searchFilter();
-                        } else {
-                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Employee not deleted!",ButtonType.OK).show();
+                    if (result.orElse(no) == yes) {
+                        TxtColours.setDefaultColours(txtEmployeeId);
+                        lblError.setText("");
+
+                        try {
+                            boolean isDeleted = employeeBO.deleteEmployee(id);
+                            if (isDeleted) {
+                                new SystemAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Employee has deleted!", ButtonType.OK).show();
+                                clearTextFields();
+                                populateEmployeeTable();
+                                searchFilter();
+                            } else {
+                                new SystemAlert(Alert.AlertType.WARNING, "Warning", "Employee not deleted!", ButtonType.OK).show();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            new SystemAlert(Alert.AlertType.ERROR, "Error", "Something went wrong!", ButtonType.OK).show();
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    lblError.setText("Invalid employee Id");
+                    lblError.setText("No Employee found.");
                     TxtColours.setErrorColours(txtEmployeeId);
                 }
+            }else {
+                lblError.setText("Invalid employee Id");
+                TxtColours.setErrorColours(txtEmployeeId);
             }
         }else {
             lblError.setText("Please enter employeeId.");
@@ -315,7 +326,7 @@ public class EmployeeFormController implements Initializable {
                             Double salary = Double.valueOf(txtSalary.getText());
 
                             try {
-                                boolean isUpdated = EmployeeModel.updateEmployee(new EmployeeDTO(id, name, address, contact, jobRole, salary));
+                                boolean isUpdated = employeeBO.updateEmployee(new EmployeeDTO(id, name, address, contact, jobRole, salary));
                                 if (isUpdated) {
                                     new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Employee has updated!",ButtonType.OK).show();
                                     clearTextFields();
@@ -371,19 +382,19 @@ public class EmployeeFormController implements Initializable {
     void markAttendenceOnAction(ActionEvent event) {
         boolean isMarked = false;
         try {
-            isMarked = AttendanceModel.findExists(LocalDate.now());
+            isMarked = employeeBO.existsAttendance(LocalDate.now());
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
         if (!isMarked) {
-            ObservableList<AttendanceDTO> attendances = FXCollections.observableArrayList();
+            ArrayList<AttendanceDTO> attendances = new ArrayList<>();
             for (int i = 0; i < tblMarkAttendence.getItems().size(); i++) {
                 String data = colStatus.getCellData(i);
                 String date = lblDate.getText();
                 String employeeId = colEmpId.getCellData(i);
                 try {
-                    String attendanceId = AttendanceModel.generateId();
+                    String attendanceId = employeeBO.generateAttendanceId();
                     if (data.equals("Present")) {
                         attendances.add(new AttendanceDTO(attendanceId, date, "Present", employeeId));
                     } else {
@@ -396,7 +407,7 @@ public class EmployeeFormController implements Initializable {
             }
 
             try {
-                boolean isSaved = AttendanceModel.saveAttendance(attendances);
+                boolean isSaved = employeeBO.saveAttendance(attendances);
                 if (isSaved) {
                     new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Attendance saved successfully!",ButtonType.OK).show();
                     populateMarkAttendenceTable();
@@ -418,7 +429,7 @@ public class EmployeeFormController implements Initializable {
         if (name != null) {
             new Thread(() -> {
                 try {
-                    String id = EmployeeModel.getEmployeeId(name);
+                    String id = employeeBO.getEmployeeId(name);
                     JasperDesign design = JRXmlLoader.load("src/main/java/lk/ijse/moods_salon/report/AttendanceReport.jrxml");
                     JasperReport report = JasperCompileManager.compileReport(design);
                     HashMap<String, Object> map = new HashMap();
@@ -439,7 +450,7 @@ public class EmployeeFormController implements Initializable {
     void DatePickerOnAction(ActionEvent event) {
         String date = DatePicker.getValue().toString();
         try {
-            ObservableList<AttendanceTM> attendance = AttendanceModel.getAttendance(date);
+            ObservableList<AttendanceTM> attendance = employeeBO.getAttendanceOfDay(date);
             tblAttendance.setItems(attendance);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -452,7 +463,7 @@ public class EmployeeFormController implements Initializable {
         if (cmbQr.getSelectionModel().getSelectedItem() != null) {
             String name = cmbQr.getSelectionModel().getSelectedItem();
             try {
-                String employeeId = EmployeeModel.getEmployeeId(name);
+                String employeeId = employeeBO.getEmployeeId(name);
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 directoryChooser.setTitle("Select a folder");
                 directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -507,7 +518,7 @@ public class EmployeeFormController implements Initializable {
     public String findEmployee(String id){
         String name = null;
         try {
-            name = EmployeeModel.findEmployee(id);
+            name = employeeBO.getEmployeeName(id);
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
@@ -516,9 +527,9 @@ public class EmployeeFormController implements Initializable {
     }
 
     public void markAttendence(String id){
-        for (MarkAttendanceTM attends : employees) {
-            if (attends.getEmpId().equals(id)){
-                attends.setStatus("Present");
+        for (AttendanceTM attends : employees) {
+            if (attends.getEmployeeId().equals(id)){
+                attends.setAttendance("Present");
             }
         }
         tblMarkAttendence.refresh();
@@ -526,7 +537,7 @@ public class EmployeeFormController implements Initializable {
 
     private void setComboBox() {
         try {
-            ObservableList<String> employees = EmployeeModel.getEmployeeNames();
+            ObservableList<String> employees = employeeBO.getAllEmployeeNames();
             cmbEmployee.setItems(employees);
             cmbQr.setItems(employees);
         } catch (SQLException e) {
@@ -543,12 +554,17 @@ public class EmployeeFormController implements Initializable {
 
     private void populateMarkAttendenceTable() {
         try {
-            boolean isMarked = AttendanceModel.findExists(LocalDate.now());
+            boolean isMarked = employeeBO.existsAttendance(LocalDate.now());
             if (!isMarked) {
-                employees = EmployeeModel.getEmployees();
+                ArrayList<EmployeeDTO> employeeDTOS = employeeBO.getAllEmployees();
+                ObservableList<AttendanceTM> temp = FXCollections.observableArrayList();
+                for (EmployeeDTO dto : employeeDTOS) {
+                    temp.add(new AttendanceTM(dto.getEmployeeId(),dto.getName(),dto.getJobRole(),"Not Marked"));
+                }
+                employees = temp;
                 tblMarkAttendence.setItems(employees);
             }else {
-                ObservableList<MarkAttendanceTM> marked = AttendanceModel.getMarkedAttendence(LocalDate.now());
+                ObservableList<AttendanceTM> marked = employeeBO.getAttendanceOfDay(String.valueOf(LocalDate.now()));
                 tblMarkAttendence.setItems(marked);
                 btnMarkAttendance.setDisable(true);
             }
@@ -567,10 +583,10 @@ public class EmployeeFormController implements Initializable {
         colAction.setCellValueFactory(new PropertyValueFactory<>("button"));
 
         //Mark attendence table
-        colEmpId.setCellValueFactory(new PropertyValueFactory<>("empId"));
-        colEmpName.setCellValueFactory(new PropertyValueFactory<>("empName"));
-        colJob.setCellValueFactory(new PropertyValueFactory<>("job"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colEmpId.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
+        colEmpName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colJob.setCellValueFactory(new PropertyValueFactory<>("jobRole"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("attendance"));
 
         //view Attendance table
         employeeCol.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
@@ -609,14 +625,14 @@ public class EmployeeFormController implements Initializable {
 
     private void populateEmployeeTable() {
         try {
-            ResultSet rs = EmployeeModel.getAllEmployees();
+            ArrayList<EmployeeDTO> allEmployees = employeeBO.getAllEmployees();
             data.clear();
-            while (rs.next()){
+            for (EmployeeDTO dto : allEmployees){
                 JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditbtnOnAction(button);
-                data.add(new EmployeeTM(rs.getString(1),rs.getString(2),rs.getString(3),rs.getDouble(4),button,rs.getString(5),rs.getString(6)));
+                data.add(new EmployeeTM(dto.getEmployeeId(),dto.getName(),dto.getJobRole(),dto.getSalary(),button,dto.getContact(),dto.getAddress()));
             }
             tblEmployee.setItems(data);
         } catch (SQLException e) {
