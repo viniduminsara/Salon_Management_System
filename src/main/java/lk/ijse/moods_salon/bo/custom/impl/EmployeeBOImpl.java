@@ -46,16 +46,13 @@ public class EmployeeBOImpl implements EmployeeBO {
 
     @Override
     public String getEmployeeId(String name) throws SQLException {
-        String employeeName =  employeeDAO.getId(name);
-        if (employeeName != null){
-            return employeeName;
-        }
-        return "Invalid QR code";
+        return employeeDAO.getId(name);
     }
 
     @Override
     public String getEmployeeName(String id) throws SQLException {
-        return employeeDAO.getName(id);
+        String name = employeeDAO.getName(id);
+        return (name != null) ? name : "Invalid QR Code";
     }
 
     @Override

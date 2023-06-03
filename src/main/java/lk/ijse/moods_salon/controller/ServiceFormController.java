@@ -14,16 +14,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
+import lk.ijse.moods_salon.bo.custom.ServiceBO;
+import lk.ijse.moods_salon.bo.custom.impl.ServiceBOImpl;
 import lk.ijse.moods_salon.dto.ServiceDTO;
 import lk.ijse.moods_salon.dto.tm.ServiceTM;
-import lk.ijse.moods_salon.model.ServiceModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
 
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -67,25 +68,27 @@ public class ServiceFormController implements Initializable {
 
     ObservableList<ServiceTM> data = FXCollections.observableArrayList();
 
+    ServiceBO serviceBO = new ServiceBOImpl();
+
     @FXML
     void addBtnOnAction(ActionEvent event) {
         boolean isExists = false;
         try {
-            isExists = ServiceModel.isExists(txtserviceid.getText());
+            isExists = serviceBO.serviceExists(txtserviceid.getText());
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
         if (!(txtserviceid.getText().isEmpty() || txtDescription.getText().isEmpty() || txtPrice.getText().isEmpty() || cmbCategory.getSelectionModel().getSelectedItem() == null)) {
-            if (!isExists) {
+            if (RegExPatterns.getServiceId().matcher(txtserviceid.getText()).matches()) {
                 TxtColours.setDefaultColours(txtserviceid);
-                if (RegExPatterns.getServiceId().matcher(txtserviceid.getText()).matches()) {
-                    TxtColours.setDefaultColours(txtserviceid);
-                    TxtColours.setDefaultColours(txtDescription);
-                    if (RegExPatterns.getDoublePattern().matcher(txtPrice.getText()).matches()) {
-                        TxtColours.setDefaultColours(txtPrice);
-                        cmbCategory.setFocusColor(Paint.valueOf("#4059a9"));
-                        cmbCategory.setUnFocusColor(Paint.valueOf("#4d4d4d"));
+                TxtColours.setDefaultColours(txtDescription);
+                if (RegExPatterns.getDoublePattern().matcher(txtPrice.getText()).matches()) {
+                    TxtColours.setDefaultColours(txtPrice);
+                    cmbCategory.setFocusColor(Paint.valueOf("#4059a9"));
+                    cmbCategory.setUnFocusColor(Paint.valueOf("#4d4d4d"));
+                    if (!isExists) {
+                        TxtColours.setDefaultColours(txtserviceid);
                         lblError.setText("");
 
                         String id = txtserviceid.getText();
@@ -94,7 +97,7 @@ public class ServiceFormController implements Initializable {
                         String category = cmbCategory.getSelectionModel().getSelectedItem();
 
                         try {
-                            boolean isSaved = ServiceModel.addService(new ServiceDTO(id, description, price, category));
+                            boolean isSaved = serviceBO.addService(new ServiceDTO(id, description, price, category));
                             if (isSaved) {
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service Saved!",ButtonType.OK).show();
                                 clearTextFields();
@@ -107,16 +110,16 @@ public class ServiceFormController implements Initializable {
                             e.printStackTrace();
                             new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                         }
-                    }else {
-                        lblError.setText("Please enter double value for price.");
-                        TxtColours.setErrorColours(txtPrice);
+                    } else {
+                        lblError.setText("Service Id already exists!");
+                        TxtColours.setErrorColours(txtserviceid);
                     }
                 }else {
-                    lblError.setText("Invalid serviceId.");
-                    TxtColours.setErrorColours(txtserviceid);
+                    lblError.setText("Please enter double value for price.");
+                    TxtColours.setErrorColours(txtPrice);
                 }
-            } else {
-                lblError.setText("Service Id already exists!");
+            }else {
+                lblError.setText("Invalid serviceId.");
                 TxtColours.setErrorColours(txtserviceid);
             }
         }else {
@@ -147,35 +150,48 @@ public class ServiceFormController implements Initializable {
     @FXML
     void deleteBtnOAction(ActionEvent event) {
         if (!txtserviceid.getText().isEmpty()) {
-            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete?",yes,no).showAndWait();
-
-            if (result.orElse(no) == yes) {
-                String id = txtserviceid.getText();
-                if (RegExPatterns.getServiceId().matcher(id).matches()) {
+            if (RegExPatterns.getServiceId().matcher(txtserviceid.getText()).matches()) {
+                boolean isExists = false;
+                try {
+                    isExists = serviceBO.serviceExists(txtserviceid.getText());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+                }
+                if (isExists) {
                     TxtColours.setDefaultColours(txtserviceid);
                     lblError.setText("");
 
-                    try {
-                        boolean isDeleted = ServiceModel.deleteService(id);
-                        if (isDeleted) {
-                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service deleted!",ButtonType.OK).show();
-                            clearTextFields();
-                            populateServiceTable();
-                            searchFilter();
-                        } else {
-                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Service not deleted!",ButtonType.OK).show();
+                    ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                    Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION, "Information", "Are you sure to delete?", yes, no).showAndWait();
+
+                    if (result.orElse(no) == yes) {
+                        String id = txtserviceid.getText();
+
+                        try {
+                            boolean isDeleted = serviceBO.deleteService(id);
+                            if (isDeleted) {
+                                new SystemAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Service deleted!", ButtonType.OK).show();
+                                clearTextFields();
+                                populateServiceTable();
+                                searchFilter();
+                            } else {
+                                new SystemAlert(Alert.AlertType.WARNING, "Warning", "Service not deleted!", ButtonType.OK).show();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            new SystemAlert(Alert.AlertType.ERROR, "Error", "Something went wrong!", ButtonType.OK).show();
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    lblError.setText("Invalid service Id");
+                    lblError.setText("No Service Found");
                     TxtColours.setErrorColours(txtserviceid);
                 }
+            }else {
+                lblError.setText("Invalid service Id");
+                TxtColours.setErrorColours(txtserviceid);
             }
         }else {
             lblError.setText("Please enter serviceId.");
@@ -201,7 +217,7 @@ public class ServiceFormController implements Initializable {
                     String category = cmbCategory.getSelectionModel().getSelectedItem();
 
                     try {
-                        boolean isUpdated = ServiceModel.updateService(new ServiceDTO(id, description, price, category));
+                        boolean isUpdated = serviceBO.updateService(new ServiceDTO(id, description, price, category));
                         if (isUpdated) {
                             new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Service updated!",ButtonType.OK).show();
                             clearTextFields();
@@ -296,14 +312,14 @@ public class ServiceFormController implements Initializable {
 
     private void populateServiceTable() {
         try {
-            ResultSet rs = ServiceModel.getAll();
+            ArrayList<ServiceDTO> allServices = serviceBO.getAllServices();
             data.clear();
-            while (rs.next()){
+            for (ServiceDTO service : allServices){
                 JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditBtnOnAction(button);
-                data.add(new ServiceTM(rs.getString(1),rs.getString(2),rs.getDouble(3),rs.getString(4),button));
+                data.add(new ServiceTM(service.getServiceId(),service.getDescription(),service.getPrice(),service.getCategory(),button));
             }
             if (data != null){
                 tblService.setItems(data);
