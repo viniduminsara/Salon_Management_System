@@ -7,13 +7,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
+import lk.ijse.moods_salon.bo.custom.ProfileBO;
+import lk.ijse.moods_salon.bo.custom.impl.ProfileBOImpl;
 import lk.ijse.moods_salon.dto.UserDTO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
-import lk.ijse.moods_salon.model.UserModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -79,6 +80,7 @@ public class ProfileFormController {
 
     private CashierDashboardFormController cashierDashboardFormController;
 
+    ProfileBO profileBO = new ProfileBOImpl();
 
     @FXML
     void btnChangeOnAction(ActionEvent event) {
@@ -128,7 +130,7 @@ public class ProfileFormController {
                     if (file != null){
                         try {
                             InputStream inputStream = new FileInputStream(file);
-                            boolean isUpdated = UserModel.updateUser(new UserDTO(id,fullName,username,type,gmail,password,inputStream));
+                            boolean isUpdated = profileBO.updateUser(new UserDTO(id,fullName,username,type,gmail,password,inputStream,null));
                             if (isUpdated){
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","User details updated!", ButtonType.OK).show();
                                 refreshUser();
@@ -143,7 +145,7 @@ public class ProfileFormController {
                         }
                     }else {
                         try {
-                            boolean isUpdated = UserModel.updateWithoutImage(new UserDTO(id,fullName,username,type,gmail,password,null));
+                            boolean isUpdated = profileBO.updateUserWithoutImage(new UserDTO(id,fullName,username,type,gmail,password,null,null));
                             if (isUpdated){
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","User details updated!", ButtonType.OK).show();
                                 refreshUser();
@@ -207,7 +209,7 @@ public class ProfileFormController {
                         String id = user.getUserId();
                         String newPassword = txtNewPassword.getText();
                         try {
-                            boolean isUpdated = UserModel.updatePassword(id,newPassword);
+                            boolean isUpdated = profileBO.updateUserPassword(id,newPassword);
                             if (isUpdated){
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Password is updated!",ButtonType.OK).show();
                                 refreshUser();
@@ -279,7 +281,7 @@ public class ProfileFormController {
 
     private void refreshUser() {
         try {
-            this.user = UserModel.getUser(user.getUserId());
+            this.user = profileBO.getUser(user.getUserId());
             if (adminDashboardFormController != null) {
                 adminDashboardFormController.setUser(user);
                 adminDashboardFormController.setUserDetails();
@@ -297,7 +299,7 @@ public class ProfileFormController {
         txtUserName.setText(user.getUserName());
         txtGmail.setText(user.getGmail());
         try {
-            InputStream inputStream = UserModel.getImage(user.getUserId());
+            InputStream inputStream = profileBO.getUserImage(user.getUserId());
             if (inputStream != null){
                 imageView.setImage(new Image(inputStream,179,171,false,true));
             }

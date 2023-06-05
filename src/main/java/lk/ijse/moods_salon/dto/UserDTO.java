@@ -18,4 +18,5 @@ public class UserDTO {
     private String gmail;
     private String password;
     private InputStream inputStream;
+    private String receipt_folder;
 }

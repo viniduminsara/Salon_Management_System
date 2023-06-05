@@ -14,8 +14,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import lk.ijse.moods_salon.bo.custom.LoginBO;
+import lk.ijse.moods_salon.bo.custom.impl.LoginBOImpl;
 import lk.ijse.moods_salon.dto.UserDTO;
-import lk.ijse.moods_salon.model.UserModel;
 import lk.ijse.moods_salon.util.TxtColours;
 
 import java.io.IOException;
@@ -47,6 +48,8 @@ public class LoginFormController implements Initializable {
 
     @FXML
     private Label lblError;
+
+    LoginBO loginBO = new LoginBOImpl();
 
     @FXML
     void checkBoxOnAction(ActionEvent event) {
@@ -90,7 +93,7 @@ public class LoginFormController implements Initializable {
                 String password = txtpassword.getText();
 
                 try {
-                    UserDTO user = UserModel.findUser(userName, password);
+                    UserDTO user = loginBO.getUser(userName, password);
                     if (user != null) {
                         if (user.getType().equals("Admin")) {
                             pane.getChildren().clear();

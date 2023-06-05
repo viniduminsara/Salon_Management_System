@@ -14,8 +14,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ijse.moods_salon.bo.custom.CreateAccountBO;
+import lk.ijse.moods_salon.bo.custom.impl.CreateAccountBOImpl;
 import lk.ijse.moods_salon.dto.UserDTO;
-import lk.ijse.moods_salon.model.UserModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -54,6 +55,7 @@ public class CreateAccountFormController implements Initializable {
     @FXML
     private Group loginbtngrp;
 
+    CreateAccountBO createAccountBO = new CreateAccountBOImpl();
 
     public void logingrpMouseClicked(MouseEvent mouseEvent) throws IOException {
         pane.getChildren().clear();
@@ -73,7 +75,7 @@ public class CreateAccountFormController implements Initializable {
 
                         String userId = null;
                         try {
-                            userId = UserModel.generateUserId();
+                            userId = createAccountBO.generateUserId();
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -84,7 +86,7 @@ public class CreateAccountFormController implements Initializable {
                         String password = txtPassword.getText();
 
                         try {
-                            boolean isSaved = UserModel.saveUser(new UserDTO(userId, fullName, userName, type, gmail, password,null));
+                            boolean isSaved = createAccountBO.addUser(new UserDTO(userId, fullName, userName, type, gmail, password,null,null));
                             if (isSaved) {
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Sign up successful!",ButtonType.OK).show();
                                 pane.getChildren().clear();

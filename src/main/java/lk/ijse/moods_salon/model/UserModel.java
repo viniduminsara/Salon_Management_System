@@ -48,7 +48,7 @@ public class UserModel {
             }else {
                 inputStream = new FileInputStream("src/main/resources/img/images.png");
             }
-            return new UserDTO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream);
+            return new UserDTO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream,rs.getString(8));
         }
         return null;
     }
@@ -87,7 +87,7 @@ public class UserModel {
             } else {
                 inputStream = new FileInputStream("src/main/resources/img/images.png");
             }
-            return new UserDTO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream);
+            return new UserDTO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), inputStream,rs.getString(8));
         }
         return null;
     }

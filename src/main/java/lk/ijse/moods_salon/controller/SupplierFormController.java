@@ -16,13 +16,11 @@ import lk.ijse.moods_salon.bo.custom.SupplierBO;
 import lk.ijse.moods_salon.bo.custom.impl.SupplierBOImpl;
 import lk.ijse.moods_salon.dto.SupplierDTO;
 import lk.ijse.moods_salon.dto.tm.SupplierTM;
-import lk.ijse.moods_salon.model.SupplierModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
 
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
