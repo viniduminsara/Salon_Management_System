@@ -14,17 +14,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import lk.ijse.moods_salon.bo.custom.InventoryBO;
+import lk.ijse.moods_salon.bo.custom.impl.InventoryBOImpl;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.InventoryDTO;
-import lk.ijse.moods_salon.dto.Inventory_order_detailDTO;
+import lk.ijse.moods_salon.dto.InventoryOrderDTO;
+import lk.ijse.moods_salon.dto.InventoryOrderDetailDTO;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.dto.tm.InventoryOrderTM;
 import lk.ijse.moods_salon.dto.tm.InventoryTM;
 import lk.ijse.moods_salon.dto.tm.OrderCartTM;
-import lk.ijse.moods_salon.model.InventoryModel;
-import lk.ijse.moods_salon.model.InventoryOrderModel;
-import lk.ijse.moods_salon.model.PlaceInventoryOrderModel;
-import lk.ijse.moods_salon.model.SupplierModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -35,7 +34,6 @@ import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.File;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -162,25 +160,27 @@ public class InventoryFormController implements Initializable {
 
     ObservableList<InventoryOrderTM> orders = FXCollections.observableArrayList();
 
+    InventoryBO inventoryBO = new InventoryBOImpl();
 
     @FXML
     void addBtnOnAction(ActionEvent event) {
         boolean isExists = false;
         try {
-            isExists = InventoryModel.isExists(txtInventory.getText());
+            isExists = inventoryBO.existsInventory(txtInventory.getText());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (!isExists) {
-            TxtColours.setDefaultColours(txtInventory);
-            if (!(txtInventory.getText().isEmpty() || txtName.getText().isEmpty() || txtQtyOnHand.getText().isEmpty() || txtUnitPrice.getText().isEmpty())) {
-                if (RegExPatterns.getInventoryId().matcher(txtInventory.getText()).matches()) {
-                    TxtColours.setDefaultColours(txtInventory);
-                    TxtColours.setDefaultColours(txtName);
-                    if (RegExPatterns.getIntPattern().matcher(txtQtyOnHand.getText()).matches()) {
-                        TxtColours.setDefaultColours(txtQtyOnHand);
-                        if (RegExPatterns.getDoublePattern().matcher(txtUnitPrice.getText()).matches()) {
-                            TxtColours.setDefaultColours(txtUnitPrice);
+
+        if (!(txtInventory.getText().isEmpty() || txtName.getText().isEmpty() || txtQtyOnHand.getText().isEmpty() || txtUnitPrice.getText().isEmpty())) {
+            if (RegExPatterns.getInventoryId().matcher(txtInventory.getText()).matches()) {
+                TxtColours.setDefaultColours(txtInventory);
+                TxtColours.setDefaultColours(txtName);
+                if (RegExPatterns.getIntPattern().matcher(txtQtyOnHand.getText()).matches()) {
+                    TxtColours.setDefaultColours(txtQtyOnHand);
+                    if (RegExPatterns.getDoublePattern().matcher(txtUnitPrice.getText()).matches()) {
+                        TxtColours.setDefaultColours(txtUnitPrice);
+                        if (!isExists) {
+                            TxtColours.setDefaultColours(txtInventory);
                             lblError.setText("");
 
                             String id = txtInventory.getText();
@@ -189,7 +189,7 @@ public class InventoryFormController implements Initializable {
                             Double unitPrice = Double.valueOf(txtUnitPrice.getText());
 
                             try {
-                                boolean isSaved = InventoryModel.addInventory(new InventoryDTO(id, name, qtyOnHand, unitPrice));
+                                boolean isSaved = inventoryBO.addInventory(new InventoryDTO(id, name, qtyOnHand, unitPrice));
                                 if (isSaved) {
                                     new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item saved!",ButtonType.OK).show();
                                     populateInventoryTable();
@@ -202,36 +202,36 @@ public class InventoryFormController implements Initializable {
                                 e.printStackTrace();
                                 new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                             }
-                        }else {
-                            lblError.setText("Please enter double value for unit price");
-                            TxtColours.setErrorColours(txtUnitPrice);
+                        }else{
+                            lblError.setText("Inventory Id already exists!");
+                            TxtColours.setErrorColours(txtInventory);
                         }
                     }else {
-                        lblError.setText("Please enter integer value for qtyOnHand.");
-                        TxtColours.setErrorColours(txtQtyOnHand);
+                        lblError.setText("Please enter double value for unit price");
+                        TxtColours.setErrorColours(txtUnitPrice);
                     }
                 }else {
-                    lblError.setText("Invalid inventoryId");
-                    TxtColours.setErrorColours(txtInventory);
-                }
-            }else {
-                lblError.setText("Please fill all details.");
-                if (txtInventory.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtInventory);
-                }
-                if (txtName.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtName);
-                }
-                if (txtQtyOnHand.getText().isEmpty()){
+                    lblError.setText("Please enter integer value for qtyOnHand.");
                     TxtColours.setErrorColours(txtQtyOnHand);
                 }
-                if (txtUnitPrice.getText().isEmpty()){
-                    TxtColours.setErrorColours(txtUnitPrice);
-                }
+            }else {
+                lblError.setText("Invalid inventoryId");
+                TxtColours.setErrorColours(txtInventory);
             }
-        }else{
-            lblError.setText("Inventory Id already exists!");
-            TxtColours.setErrorColours(txtInventory);
+        }else {
+            lblError.setText("Please fill all details.");
+            if (txtInventory.getText().isEmpty()){
+                TxtColours.setErrorColours(txtInventory);
+            }
+            if (txtName.getText().isEmpty()){
+                TxtColours.setErrorColours(txtName);
+            }
+            if (txtQtyOnHand.getText().isEmpty()){
+                TxtColours.setErrorColours(txtQtyOnHand);
+            }
+            if (txtUnitPrice.getText().isEmpty()){
+                TxtColours.setErrorColours(txtUnitPrice);
+            }
         }
     }
 
@@ -245,35 +245,46 @@ public class InventoryFormController implements Initializable {
     @FXML
     void deleteBtnOnAction(ActionEvent event) {
         if (!txtInventory.getText().isEmpty()) {
-            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-            Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION,"Information","Are you sure to delete ?",yes,no).showAndWait();
-
-            if (result.orElse(no) == yes) {
-                String id = txtInventory.getText();
-                if (RegExPatterns.getInventoryId().matcher(id).matches()) {
+            if (RegExPatterns.getInventoryId().matcher(txtInventory.getText()).matches()) {
+                boolean isExists = false;
+                try {
+                    isExists = inventoryBO.existsInventory(txtInventory.getText());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                if(isExists) {
                     TxtColours.setDefaultColours(txtInventory);
-                    lblError.setText("");
+                    ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-                    try {
-                        boolean isDeleted = InventoryModel.deleteInventory(id);
-                        if (isDeleted) {
-                            new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item has deleted!",ButtonType.OK).show();
-                            populateInventoryTable();
-                            searchFilter();
-                            clearTextFields();
-                        } else {
-                            new SystemAlert(Alert.AlertType.WARNING,"Warning","Inventory item not deleted!",ButtonType.OK).show();
+                    Optional<ButtonType> result = new SystemAlert(Alert.AlertType.INFORMATION, "Information", "Are you sure to delete ?", yes, no).showAndWait();
+
+                    if (result.orElse(no) == yes) {
+                        String id = txtInventory.getText();
+                        lblError.setText("");
+
+                        try {
+                            boolean isDeleted = inventoryBO.deleteInventory(id);
+                            if (isDeleted) {
+                                new SystemAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Inventory item has deleted!", ButtonType.OK).show();
+                                populateInventoryTable();
+                                searchFilter();
+                                clearTextFields();
+                            } else {
+                                new SystemAlert(Alert.AlertType.WARNING, "Warning", "Inventory item not deleted!", ButtonType.OK).show();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            new SystemAlert(Alert.AlertType.ERROR, "Error", "Something went wrong!", ButtonType.OK).show();
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        new SystemAlert(Alert.AlertType.ERROR,"Error","Something went wrong!",ButtonType.OK).show();
                     }
                 }else {
-                    lblError.setText("Invalid inventory Id");
+                    lblError.setText("No inventory Found");
                     TxtColours.setErrorColours(txtInventory);
                 }
+            }else {
+                lblError.setText("Invalid inventory Id");
+                TxtColours.setErrorColours(txtInventory);
             }
         }else {
             lblError.setText("Please enter the inventoryId.");
@@ -305,7 +316,7 @@ public class InventoryFormController implements Initializable {
                         Double unitPrice = Double.valueOf(txtUnitPrice.getText());
 
                         try {
-                            boolean isUpdated = InventoryModel.updateInventory(new InventoryDTO(id, name, qtyOnHand, unitPrice));
+                            boolean isUpdated = inventoryBO.updateInventory(new InventoryDTO(id, name, qtyOnHand, unitPrice));
                             if (isUpdated) {
                                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventory item has updated!",ButtonType.OK).show();
                                 clearTextFields();
@@ -390,7 +401,7 @@ public class InventoryFormController implements Initializable {
     void cmbInventoryIdOnAction(ActionEvent event) {
         String id = cmbInventoryId.getSelectionModel().getSelectedItem();
         try {
-            InventoryDTO item = InventoryModel.getInventoryDetails(id);
+            InventoryDTO item = inventoryBO.getInventory(id);
             if (item != null){
                 lblInventoryName.setText(item.getName());
                 lblQtyOnHand.setText(String.valueOf(item.getQtyOnHand()));
@@ -407,7 +418,7 @@ public class InventoryFormController implements Initializable {
     void cmbSupplierIdOnAction(ActionEvent event) {
         String supplier = cmbSupplierId.getSelectionModel().getSelectedItem();
         try {
-            String name = SupplierModel.getSupplierName(supplier);
+            String name = inventoryBO.getSupplierName(supplier);
             if (name != null){
                 lblSupplierName.setText(name);
                 cmbSupplierId.setDisable(true);
@@ -427,16 +438,16 @@ public class InventoryFormController implements Initializable {
     void placeOrderBtnOnAction(ActionEvent event) {
         if (!(cmbSupplierId.getSelectionModel().getSelectedItem() == null || OrderDate.getValue() == null)) {
             if (tblCart.getItems().size() != 0) {
-                ArrayList<Inventory_order_detailDTO> items = new ArrayList<>();
-                for (OrderCartTM cartItem : cart) {
-                    items.add(new Inventory_order_detailDTO(cartItem.getInventoryId(), cartItem.getQty()));
-                }
                 String orderId = lblOrderId.getText();
+                ArrayList<InventoryOrderDetailDTO> items = new ArrayList<>();
+                for (OrderCartTM cartItem : cart) {
+                    items.add(new InventoryOrderDetailDTO(orderId,cartItem.getInventoryId(),cartItem.getQty()));
+                }
                 Date date = Date.from(OrderDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
                 String supplierId = cmbSupplierId.getSelectionModel().getSelectedItem();
                 String userId = user.getUserId();
                 try {
-                    boolean isPlaced = PlaceInventoryOrderModel.placeOrder(orderId, date, supplierId, userId, items);
+                    boolean isPlaced = inventoryBO.placeInventoryOrder(new InventoryOrderDTO(orderId, date, supplierId, userId), items);
                     if (isPlaced) {
                         new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Inventoy order placed!",ButtonType.OK).show();
                         clearComponents();
@@ -525,7 +536,7 @@ public class InventoryFormController implements Initializable {
 
     private void populateOrderTable() {
         try {
-            orders = InventoryOrderModel.getAll();
+            orders = inventoryBO.getAllOrders();
             tblOrders.setItems(orders);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -538,7 +549,7 @@ public class InventoryFormController implements Initializable {
 
     private void generateOrderId() {
         try {
-            String id = InventoryOrderModel.generateId();
+            String id = inventoryBO.generateOrderId();
             lblOrderId.setText(id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -578,7 +589,7 @@ public class InventoryFormController implements Initializable {
 
     private void setInventoryId() {
         try {
-            ObservableList<String> inventories = InventoryModel.getInventoryIds();
+            ObservableList<String> inventories = inventoryBO.getInventoryIds();
             cmbInventoryId.setItems(inventories);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -588,7 +599,7 @@ public class InventoryFormController implements Initializable {
 
     private void setSupplierId() {
         try {
-            ObservableList<String> suppliers = SupplierModel.getSupplierIds();
+            ObservableList<String> suppliers = inventoryBO.getSupplierIds();
             cmbSupplierId.setItems(suppliers);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -649,14 +660,14 @@ public class InventoryFormController implements Initializable {
 
     private void populateInventoryTable() {
         try {
-            ResultSet rs = InventoryModel.getAllInventory();
+            ArrayList<InventoryDTO> allInventory = inventoryBO.getAllInventory();
             data.clear();
-            while (rs.next()){
+            for (InventoryDTO item : allInventory){
                 JFXButton button = new JFXButton("edit",new ImageView("img/edit-97@30x.png"));
                 button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 button.getStyleClass().add("infoBtn");
                 setEditBtnOnAction(button);
-                data.add(new InventoryTM(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getDouble(4),button));
+                data.add(new InventoryTM(item.getInventoryId(),item.getName(),item.getQtyOnHand(),item.getUnitPrice(),button));
             }
             tblinventory.setItems(data);
         } catch (SQLException e) {

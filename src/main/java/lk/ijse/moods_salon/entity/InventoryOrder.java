@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 @ToString
 
-public class Inventory_order {
+public class InventoryOrder {
     private String orderId;
     private Date date;
     private String supplierId;

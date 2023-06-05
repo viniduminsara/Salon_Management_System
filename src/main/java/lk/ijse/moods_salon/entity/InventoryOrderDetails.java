@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 
-public class Inventory_order_details {
+public class InventoryOrderDetails {
     private String OrderId;
     private String inventoryId;
     private Integer qty;

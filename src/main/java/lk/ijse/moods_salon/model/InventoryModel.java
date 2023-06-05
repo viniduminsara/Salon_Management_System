@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
 import lk.ijse.moods_salon.dto.InventoryDTO;
-import lk.ijse.moods_salon.dto.Inventory_order_detailDTO;
+import lk.ijse.moods_salon.dto.InventoryOrderDetailDTO;
 import lk.ijse.moods_salon.util.CrudUtil;
 
 import java.sql.ResultSet;
@@ -100,8 +100,8 @@ public class InventoryModel {
         return null;
     }
 
-    public static boolean updateOrderQty(ArrayList<Inventory_order_detailDTO> items) throws SQLException {
-        for (Inventory_order_detailDTO inventory : items) {
+    public static boolean updateOrderQty(ArrayList<InventoryOrderDetailDTO> items) throws SQLException {
+        for (InventoryOrderDetailDTO inventory : items) {
             if (!updateQty(inventory)){
                 return false;
             }
@@ -109,7 +109,7 @@ public class InventoryModel {
         return true;
     }
 
-    private static boolean updateQty(Inventory_order_detailDTO inventory) throws SQLException {
+    private static boolean updateQty(InventoryOrderDetailDTO inventory) throws SQLException {
         String query = "UPDATE inventory SET qtyOnHand = (qtyOnHand + ?) WHERE inventoryId = ?";
         return CrudUtil.execute(query,inventory.getQty(),inventory.getInventoryId());
     }

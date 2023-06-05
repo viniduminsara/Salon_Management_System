@@ -1,7 +1,7 @@
 package lk.ijse.moods_salon.model;
 
 import lk.ijse.moods_salon.db.DBConnection;
-import lk.ijse.moods_salon.dto.Inventory_order_detailDTO;
+import lk.ijse.moods_salon.dto.InventoryOrderDetailDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class PlaceInventoryOrderModel {
 
-    public static boolean placeOrder(String orderId, Date date, String supplierId, String userId, ArrayList<Inventory_order_detailDTO> items) throws SQLException {
+    public static boolean placeOrder(String orderId, Date date, String supplierId, String userId, ArrayList<InventoryOrderDetailDTO> items) throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
 
         try {
