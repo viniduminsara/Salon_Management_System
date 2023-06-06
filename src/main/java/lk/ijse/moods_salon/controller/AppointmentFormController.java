@@ -16,17 +16,20 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+import lk.ijse.moods_salon.bo.custom.AppointmentBO;
+import lk.ijse.moods_salon.bo.custom.impl.AppointmentBOImpl;
+import lk.ijse.moods_salon.dto.AppointmentDTO;
+import lk.ijse.moods_salon.dto.Employee_detailsDTO;
 import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
+import lk.ijse.moods_salon.dto.Service_detailsDTO;
 import lk.ijse.moods_salon.dto.tm.AppointmentCartTM;
 import lk.ijse.moods_salon.dto.tm.AppointmentTM;
 import lk.ijse.moods_salon.mail.Mail;
-import lk.ijse.moods_salon.model.*;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -121,6 +124,8 @@ public class AppointmentFormController implements Initializable {
 
     ObservableList<String> inventories = FXCollections.observableArrayList();
 
+    AppointmentBO appointmentBO = new AppointmentBOImpl();
+
     @FXML
     void addCustomerBtnOnAction(ActionEvent event) throws IOException {
         pane.getChildren().clear();
@@ -131,12 +136,22 @@ public class AppointmentFormController implements Initializable {
     void cmbCustomerOnAction(ActionEvent event) {
         String id = cmbCustomer.getSelectionModel().getSelectedItem();
         try {
-            String name = CustomerModel.getCustomerName(id);
+            String name = appointmentBO.getCustomerName(id);
             lblCustomerName.setText(name);
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
         }
+    }
+
+    @FXML
+    void cmbInventoryOnAction(ActionEvent event) {
+        txtQty.requestFocus();
+    }
+
+    @FXML
+    void txtQtyOnAction(ActionEvent event) {
+        addRequirementOnAction(event);
     }
 
     @FXML
@@ -154,7 +169,7 @@ public class AppointmentFormController implements Initializable {
                 int qty = Integer.parseInt(txtQty.getText());
                 double price = 0;
                 try {
-                    price = ServiceModel.findPrice(service);
+                    price = appointmentBO.getServicePrice(service);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
@@ -185,20 +200,20 @@ public class AppointmentFormController implements Initializable {
                     String time = appointmentTime.getValue().toString();
                     String customerId = cmbCustomer.getSelectionModel().getSelectedItem();
 
-                    List<String> services = new ArrayList<>();
-                    List<String> employees = new ArrayList<>();
-                    List<Inventory_detailsDTO> inventoryList = new ArrayList<>();
+                    ArrayList<Service_detailsDTO> services = new ArrayList<>();
+                    ArrayList<Employee_detailsDTO> employees = new ArrayList<>();
+                    ArrayList<Inventory_detailsDTO> inventoryList = new ArrayList<>();
 
                     for (int i = 0; i < tblCart.getItems().size(); i++) {
                         AppointmentCartTM cartTM = tblCart.getItems().get(i);
                         try {
-                            String serviceId = ServiceModel.getServiceId(cartTM.getService());
-                            services.add(serviceId);
+                            String serviceId = appointmentBO.getServiceId(cartTM.getService());
+                            services.add(new Service_detailsDTO(appointmentId,serviceId));
 
-                            String employeeId = EmployeeModel.getEmployeeId(cartTM.getEmployee());
-                            employees.add(employeeId);
+                            String employeeId = appointmentBO.getEmployeeId(cartTM.getEmployee());
+                            employees.add(new Employee_detailsDTO(appointmentId,employeeId));
 
-                            String inventoryId = InventoryModel.getInventoryId(cartTM.getInventory());
+                            String inventoryId = appointmentBO.getInventoryId(cartTM.getInventory());
                             inventoryList.add(new Inventory_detailsDTO(appointmentId, inventoryId, cartTM.getQty()));
                         } catch (SQLException e) {
                             e.printStackTrace();
@@ -207,7 +222,7 @@ public class AppointmentFormController implements Initializable {
                     }
 
                     try {
-                        boolean isPlaced = PlaceAppointmentModel.placeAppointment(appointmentId, date, time, customerId, services, employees, inventoryList);
+                        boolean isPlaced = appointmentBO.placeAppointment(new AppointmentDTO(appointmentId, date, time,"Pending", customerId), services, employees, inventoryList);
                         if (isPlaced) {
                             new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Appointment has placed!",ButtonType.OK).show();
                             sendMail(customerId, date, time);
@@ -258,7 +273,7 @@ public class AppointmentFormController implements Initializable {
         String day = appointtmentDate.getValue().toString();
         String email = null;
         try {
-            email = CustomerModel.getEmail(customerId);
+            email = appointmentBO.getCustomerEmail(customerId);
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
@@ -315,16 +330,16 @@ public class AppointmentFormController implements Initializable {
     private void populateAppointmentTable() {
         try {
             appointment.clear();
-            ResultSet rs = AppointmentModel.getAll();
-            while (rs.next()){
-                if (rs.getString(5).equals("Canceled") || rs.getString(5).equals("Completed")){
-                    appointment.add(new AppointmentTM(rs.getString(1),rs.getString(2),rs.getDate(3),rs.getString(4),rs.getString(5),new JFXButton()));
+            ArrayList<AppointmentDTO> allAppointments = appointmentBO.getAllAppointments();
+            for (AppointmentDTO dto : allAppointments){
+                if (dto.getStatus().equals("Canceled") || dto.getStatus().equals("Completed")){
+                    appointment.add(new AppointmentTM(dto.getAppointmentId(),dto.getCustomerId(),dto.getDate(),dto.getTime(),dto.getStatus(),new JFXButton()));
                 }else {
                     JFXButton button = new JFXButton("cancel", new ImageView("img/cancel@1.5x.png"));
                     button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     button.getStyleClass().add("infoBtn");
                     setCancelBtnOnAction(button);
-                    appointment.add(new AppointmentTM(rs.getString(1), rs.getString(2), rs.getDate(3), rs.getString(4), rs.getString(5), button));
+                    appointment.add(new AppointmentTM(dto.getAppointmentId(),dto.getCustomerId(),dto.getDate(),dto.getTime(),dto.getStatus(), button));
                 }
             }
             tblAppointment.setItems(appointment);
@@ -349,7 +364,7 @@ public class AppointmentFormController implements Initializable {
             if (result.orElse(no) == yes){
                 String id = String.valueOf(colAppointmentId.getCellData(index));
                 try {
-                    boolean isCanceled = AppointmentModel.cancelAppointment(id);
+                    boolean isCanceled = appointmentBO.cancelAppointment(id);
                     if (isCanceled){
                         new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","Appointment '"+id+"' was canceled",ButtonType.OK).show();
                         populateAppointmentTable();
@@ -420,7 +435,7 @@ public class AppointmentFormController implements Initializable {
 
     private void generateAppointmentId() {
         try {
-            String id = AppointmentModel.generateId();
+            String id = appointmentBO.generateAppointmentId();
             lblAppointmentId.setText(id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -430,7 +445,7 @@ public class AppointmentFormController implements Initializable {
 
     private void setInventory() {
         try {
-            inventories = InventoryModel.getInventoryNames();
+            inventories = appointmentBO.getInventoryNames();
             cmbInventory.setItems(inventories);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -440,7 +455,7 @@ public class AppointmentFormController implements Initializable {
 
     private void setEmployees() {
         try {
-            employees = EmployeeModel.getEmployeeNames();
+            employees = appointmentBO.getEmployeeNames();
             cmbEmployee.setItems(employees);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -450,7 +465,7 @@ public class AppointmentFormController implements Initializable {
 
     private void setServices() {
         try {
-            services = ServiceModel.getServiceNames();
+            services = appointmentBO.getServiceNames();
             cmbService.setItems(services);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -460,7 +475,7 @@ public class AppointmentFormController implements Initializable {
 
     private void setCustomers() {
         try {
-            ObservableList<String> customer = CustomerModel.getAllCustomerId();
+            ObservableList<String> customer = appointmentBO.getCustomerIds();
             cmbCustomer.setItems(customer);
         } catch (SQLException e) {
             e.printStackTrace();

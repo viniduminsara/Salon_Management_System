@@ -88,10 +88,9 @@ public class InventoryBOImpl implements InventoryBO {
 
     @Override
     public boolean placeInventoryOrder(InventoryOrderDTO dto, ArrayList<InventoryOrderDetailDTO> items) throws SQLException {
-        Connection connection;
+        Connection connection = DBConnection.getInstance().getConnection();
 
         try {
-            connection = DBConnection.getInstance().getConnection();
             connection.setAutoCommit(false);
 
             //save Order
@@ -125,9 +124,11 @@ public class InventoryBOImpl implements InventoryBO {
             connection.setAutoCommit(true);
             return true;
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+            connection.setAutoCommit(true);
+            return false;
         }
-        return false;
     }
 }

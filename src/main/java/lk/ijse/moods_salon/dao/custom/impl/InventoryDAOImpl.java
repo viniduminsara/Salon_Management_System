@@ -73,4 +73,31 @@ public class InventoryDAOImpl implements InventoryDAO {
         String query = "UPDATE inventory SET qtyOnHand = (qtyOnHand + ?) WHERE inventoryId = ?";
         return SQLUtil.execute(query,qty,id);
     }
+
+    @Override
+    public String getId(String name) throws SQLException {
+        String query = "SELECT inventoryId FROM inventory WHERE name = ?";
+        ResultSet rs = SQLUtil.execute(query,name);
+        if (rs.next()){
+            return rs.getString(1);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateUsedQty(String id, Integer qty) throws SQLException {
+        String query = "UPDATE inventory SET qtyOnHand = (qtyOnHand - ?) WHERE inventoryId = ?";
+        return SQLUtil.execute(query,qty,id);
+    }
+
+    @Override
+    public ObservableList<String> getNames() throws SQLException {
+        String query = "SELECT name FROM inventory ORDER BY inventoryId";
+        ResultSet rs = SQLUtil.execute(query);
+        ObservableList<String> inventory = FXCollections.observableArrayList();
+        while (rs.next()){
+            inventory.add(rs.getString(1));
+        }
+        return inventory;
+    }
 }

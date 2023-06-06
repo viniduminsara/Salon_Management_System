@@ -14,4 +14,10 @@ public interface InventoryDAO extends CrudDAO<Inventory,String> {
 
     boolean updateQty(String id,Integer qty) throws SQLException;
 
+    String getId(String name) throws SQLException;
+
+    boolean updateUsedQty(String id,Integer qty) throws SQLException;
+
+    ObservableList<String> getNames() throws SQLException;
+
 }

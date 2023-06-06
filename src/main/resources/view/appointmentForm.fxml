@@ -52,8 +52,8 @@
                               </Label>
                               <JFXComboBox fx:id="cmbService" labelFloat="true" layoutX="50.0" layoutY="106.0" prefHeight="31.0" prefWidth="215.0" promptText="Service" />
                               <JFXComboBox fx:id="cmbEmployee" labelFloat="true" layoutX="309.0" layoutY="106.0" prefHeight="31.0" prefWidth="215.0" promptText="Employee " />
-                              <JFXComboBox fx:id="cmbInventory" labelFloat="true" layoutX="51.0" layoutY="197.0" prefHeight="31.0" prefWidth="215.0" promptText="Inventory " />
-                              <JFXTextField fx:id="txtQty" labelFloat="true" layoutX="309.0" layoutY="197.0" prefHeight="31.0" prefWidth="99.0" promptText="Qty" />
+                              <JFXComboBox fx:id="cmbInventory" labelFloat="true" layoutX="51.0" layoutY="197.0" onAction="#cmbInventoryOnAction" prefHeight="31.0" prefWidth="215.0" promptText="Inventory " />
+                              <JFXTextField fx:id="txtQty" labelFloat="true" layoutX="309.0" layoutY="197.0" onAction="#txtQtyOnAction" prefHeight="31.0" prefWidth="99.0" promptText="Qty" />
                               <JFXButton graphicTextGap="5.0" layoutX="50.0" layoutY="297.0" onAction="#addRequirementOnAction" prefHeight="41.0" prefWidth="197.0" style="-fx-background-color: #f07167; -fx-background-radius: 10px;" text="Add Requirements" textFill="WHITE">
                                  <graphic>
                                     <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true">
