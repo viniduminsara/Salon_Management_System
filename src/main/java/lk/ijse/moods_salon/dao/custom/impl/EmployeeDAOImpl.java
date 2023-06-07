@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import lk.ijse.moods_salon.dao.SQLUtil;
 import lk.ijse.moods_salon.dao.custom.EmployeeDAO;
 import lk.ijse.moods_salon.entity.Employee;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -75,5 +76,16 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employees.add(rs.getString(1));
         }
         return employees;
+    }
+
+    @Override
+    public String getTotal() throws SQLException {
+        String query = "SELECT COUNT(employeeId) FROM employee";
+        ResultSet resultSet = SQLUtil.execute(query);
+
+        if(resultSet.next()){
+            return resultSet.getString(1);
+        }
+        return null;
     }
 }

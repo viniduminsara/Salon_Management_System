@@ -1,5 +1,7 @@
 package lk.ijse.moods_salon.dao.custom.impl;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import lk.ijse.moods_salon.dao.SQLUtil;
 import lk.ijse.moods_salon.dao.custom.AppointmentDAO;
 import lk.ijse.moods_salon.entity.Appointment;
@@ -54,5 +56,33 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         String query = "SELECT appointmentId FROM appointment ORDER BY appointmentId DESC LIMIT 1";
         ResultSet rs = SQLUtil.execute(query);
         return rs.next() ? String.format("A%03d", (Integer.parseInt(rs.getString(1).replace("A", "")) + 1)) : "A001";
+    }
+
+    @Override
+    public ObservableList<String> getPendingIds() throws SQLException {
+        String query = "SELECT appointmentId FROM appointment WHERE status = 'Pending'";
+        ResultSet rs = SQLUtil.execute(query);
+        ObservableList<String> ids = FXCollections.observableArrayList();
+        while (rs.next()){
+            ids.add(rs.getString(1));
+        }
+        return ids;
+    }
+
+    @Override
+    public boolean updateStatus(String id) throws SQLException {
+        String query = "UPDATE appointment SET status = 'Completed' WHERE appointmentId = ?";
+        return SQLUtil.execute(query,id);
+    }
+
+    @Override
+    public String getTotal() throws SQLException {
+        String query = "SELECT COUNT(appointmentId) FROM appointment";
+        ResultSet resultSet = SQLUtil.execute(query);
+
+        if (resultSet.next()){
+            return resultSet.getString(1);
+        }
+        return null;
     }
 }

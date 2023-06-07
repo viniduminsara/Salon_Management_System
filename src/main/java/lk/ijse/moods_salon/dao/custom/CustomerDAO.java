@@ -17,4 +17,6 @@ public interface CustomerDAO extends CrudDAO<Customer,String> {
 
     ObservableList<String> getIds() throws SQLException;
 
+    String getTotal() throws SQLException;
+
 }

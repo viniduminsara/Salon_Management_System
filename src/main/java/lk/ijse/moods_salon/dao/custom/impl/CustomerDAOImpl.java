@@ -88,4 +88,14 @@ public class CustomerDAOImpl implements CustomerDAO {
         }
         return customer;
     }
+
+    @Override
+    public String getTotal() throws SQLException {
+        String query = "SELECT COUNT(customerId) FROM customer";
+        ResultSet resultSet = SQLUtil.execute(query);
+        if (resultSet.next()){
+            return resultSet.getString(1);
+        }
+        return null;
+    }
 }

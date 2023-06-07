@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import lk.ijse.moods_salon.bo.custom.HomeBO;
+import lk.ijse.moods_salon.bo.custom.impl.HomeBOImpl;
 import lk.ijse.moods_salon.dto.tm.UpcomingAppointmentTM;
 import lk.ijse.moods_salon.model.AppointmentModel;
 import lk.ijse.moods_salon.model.CustomerModel;
@@ -67,6 +69,8 @@ public class HomeFormController implements Initializable {
     @FXML
     private Label lblTable;
 
+    HomeBO homeBO = new HomeBOImpl();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadDateandTime();
@@ -78,12 +82,12 @@ public class HomeFormController implements Initializable {
 
     private void loadDetails() {
         try {
-            int totalCustomer = CustomerModel.findTotalCustomers();
-            int totalAppointments = AppointmentModel.findTotalAppointments();
-            int totalEmployees = EmployeeModel.findTotalEmployees();
-            lblCustomer.setText(String.valueOf(totalCustomer));
-            lblAppointment.setText(String.valueOf(totalAppointments));
-            lblEmployee.setText(String.valueOf(totalEmployees));
+            String totalCustomer = homeBO.getTotalCustomers();
+            String totalAppointments = homeBO.getTotalAppointments();
+            String totalEmployees = homeBO.getTotalEmployees();
+            lblCustomer.setText(totalCustomer);
+            lblAppointment.setText(totalAppointments);
+            lblEmployee.setText(totalEmployees);
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
@@ -92,9 +96,9 @@ public class HomeFormController implements Initializable {
 
     private void loadBarChart() {
         try {
-            XYChart.Series<String,Double> series = PaymentModel.findIncome();
+            XYChart.Series<String,Double> series = homeBO.getIncome();
             barChart.setLegendVisible(false);
-            if (series != null){
+            if (!series.getData().isEmpty()){
                 barChart.getData().addAll(series);
             }
             for (XYChart.Data<String, Double> data : series.getData()) {
@@ -117,7 +121,7 @@ public class HomeFormController implements Initializable {
 
     private void populateUpcomingTable() {
         try {
-            ObservableList<UpcomingAppointmentTM> data = AppointmentModel.findUpcomingAppointment();
+            ObservableList<UpcomingAppointmentTM> data = homeBO.getAllUpcomingAppointments();
             if (!data.isEmpty()){
                 tblUpcoming.setItems(data);
                 image.setVisible(false);

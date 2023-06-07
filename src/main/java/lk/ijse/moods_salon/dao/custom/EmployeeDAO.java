@@ -13,4 +13,6 @@ public interface EmployeeDAO extends CrudDAO<Employee,String> {
 
     ObservableList<String> getAllNames() throws SQLException;
 
+    String getTotal() throws SQLException;
+
 }

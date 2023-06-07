@@ -1,9 +1,8 @@
-package lk.ijse.moods_salon.entity;
+package lk.ijse.moods_salon.dto;
 
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,10 +10,12 @@ import java.util.Date;
 @Setter
 @ToString
 
-public class Payment {
+public class PaymentDTO {
+
     private String paymentId;
     private Double amount;
     private LocalDate date;
     private String userId;
     private String appointmentId;
+
 }

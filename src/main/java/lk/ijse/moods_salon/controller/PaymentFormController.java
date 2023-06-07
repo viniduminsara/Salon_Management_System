@@ -13,14 +13,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
+import lk.ijse.moods_salon.bo.custom.PaymentBO;
+import lk.ijse.moods_salon.bo.custom.impl.PaymentBOImpl;
 import lk.ijse.moods_salon.db.DBConnection;
+import lk.ijse.moods_salon.dto.PaymentDTO;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.dto.tm.PaymentTM;
 import lk.ijse.moods_salon.mail.Mail;
 import lk.ijse.moods_salon.model.AppointmentModel;
-import lk.ijse.moods_salon.model.PaymentModel;
-import lk.ijse.moods_salon.model.PlacePaymentModel;
-import lk.ijse.moods_salon.model.UserModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -31,8 +31,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -87,6 +86,8 @@ public class PaymentFormController implements Initializable {
 
     ObservableList<PaymentTM> data = FXCollections.observableArrayList();
 
+    PaymentBO paymentBO = new PaymentBOImpl();
+
     private UserDTO user;
 
     private String filePath;
@@ -100,14 +101,12 @@ public class PaymentFormController implements Initializable {
 
                     String paymentId = lblPaymentId.getText();
                     double amount = Double.parseDouble(txtAmount.getText());
-                    Date dateformat = new Date();
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    String date = formatter.format(dateformat);
+                    LocalDate date = LocalDate.now();
                     String userId = user.getUserId();
                     String appointmentId = cmbAppointmentId.getSelectionModel().getSelectedItem();
 
                     try {
-                        boolean isPaymentPlaced = PlacePaymentModel.placePayment(paymentId, amount, date, userId, appointmentId);
+                        boolean isPaymentPlaced = paymentBO.placePayment(new PaymentDTO(paymentId, amount, date, userId, appointmentId));
                         if (isPaymentPlaced) {
                             generateReceipt(paymentId, appointmentId);
                             new SystemAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Payment has placed!", ButtonType.OK).show();
@@ -152,7 +151,7 @@ public class PaymentFormController implements Initializable {
     void cmbAppointmentOnAction(ActionEvent event) {
         String id = cmbAppointmentId.getSelectionModel().getSelectedItem();
         try {
-            String amount = AppointmentModel.findAmount(id);
+            String amount = paymentBO.getPaymentAmount(id);
             txtAmount.setText(amount);
             String customer = AppointmentModel.getCustomer(id);
             lblCustomerName.setText(customer);
@@ -188,7 +187,7 @@ public class PaymentFormController implements Initializable {
     @FXML
     void btnSaveOnAction(ActionEvent event) {
         try {
-            boolean isSaved = UserModel.saveFilePath(filePath,user.getUserId());
+            boolean isSaved = paymentBO.saveFilePath(filePath,user.getUserId());
             if (isSaved){
                 new SystemAlert(Alert.AlertType.CONFIRMATION,"Confirmation","File path saved!",ButtonType.OK).show();
             }else {
@@ -215,7 +214,7 @@ public class PaymentFormController implements Initializable {
 
     public void getFilePath() {
         try {
-            String file = UserModel.getFilePath(user.getUserId());
+            String file = paymentBO.getFilePath(user.getUserId());
             if (file != null){
                 filePath = file;
                 txtFilePath.setText(filePath);
@@ -239,7 +238,7 @@ public class PaymentFormController implements Initializable {
 
             JasperExportManager.exportReportToPdfFile(jasperPrint, filePath + "\\Receipt " + paymentId + ".pdf");
 
-            String email = PaymentModel.getEmail(paymentId);
+            String email = paymentBO.getEmail(paymentId);
 
             String subject = "Payment has done!";
             String msg = "Payment has done and your receipt is attached here.";
@@ -305,7 +304,7 @@ public class PaymentFormController implements Initializable {
 
     private void populatePaymentTable() {
         try {
-            data = PaymentModel.getAll();
+            data = paymentBO.getAllPayments();
             tblPayment.setItems(data);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -315,7 +314,7 @@ public class PaymentFormController implements Initializable {
 
     private void getAppointments() {
         try {
-            ObservableList<String> appointmentId = AppointmentModel.getPendingAppointments();
+            ObservableList<String> appointmentId = paymentBO.getPendingAppointments();
             cmbAppointmentId.setItems(appointmentId);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -325,7 +324,7 @@ public class PaymentFormController implements Initializable {
 
     private void generatePaymentId() {
         try {
-            String id = PaymentModel.generateId();
+            String id = paymentBO.generatePaymentId();
             lblPaymentId.setText(id);
         } catch (SQLException e) {
             e.printStackTrace();

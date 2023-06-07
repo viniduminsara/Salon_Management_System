@@ -106,4 +106,20 @@ public class UserDAOImpl implements UserDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean saveFilePath(String filepath, String id) throws SQLException {
+        String query = "UPDATE user SET receipt_folder = ? WHERE userId = ?";
+        return SQLUtil.execute(query,filepath,id);
+    }
+
+    @Override
+    public String getFilePath(String id) throws SQLException {
+        String query = "SELECT receipt_folder FROM user WHERE userId = ?";
+        ResultSet rs = SQLUtil.execute(query,id);
+        if (rs.next()){
+            return rs.getString(1);
+        }
+        return null;
+    }
 }

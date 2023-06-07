@@ -21,4 +21,8 @@ public interface UserDAO extends CrudDAO<User,String> {
 
     User get(String id) throws SQLException, FileNotFoundException;
 
+    boolean saveFilePath(String filepath,String id) throws SQLException;
+
+    String getFilePath(String id) throws SQLException;
+
 }
