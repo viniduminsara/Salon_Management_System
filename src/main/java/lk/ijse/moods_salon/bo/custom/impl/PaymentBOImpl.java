@@ -91,4 +91,9 @@ public class PaymentBOImpl implements PaymentBO {
             return false;
         }
     }
+
+    @Override
+    public String getCustomerName(String id) throws SQLException {
+        return queryDAO.getCustomerName(id);
+    }
 }

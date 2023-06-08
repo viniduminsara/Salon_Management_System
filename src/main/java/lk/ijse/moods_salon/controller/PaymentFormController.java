@@ -21,7 +21,6 @@ import lk.ijse.moods_salon.dto.PaymentDTO;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.dto.tm.PaymentTM;
 import lk.ijse.moods_salon.mail.Mail;
-import lk.ijse.moods_salon.model.AppointmentModel;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
 import lk.ijse.moods_salon.util.TxtColours;
@@ -154,7 +153,7 @@ public class PaymentFormController implements Initializable {
         try {
             String amount = paymentBO.getPaymentAmount(id);
             txtAmount.setText(amount);
-            String customer = AppointmentModel.getCustomer(id);
+            String customer = paymentBO.getCustomerName(id);
             lblCustomerName.setText(customer);
         } catch (SQLException e) {
             e.printStackTrace();

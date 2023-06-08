@@ -116,4 +116,15 @@ public class QueryDAOImpl implements QueryDAO {
         }
         return data;
     }
+
+    @Override
+    public String getCustomerName(String id) throws SQLException {
+        String query = "SELECT name FROM appointment\n" +
+                "join customer on customer.customerId = appointment.customerId WHERE appointmentId = ?";
+        ResultSet rs = SQLUtil.execute(query,id);
+        if (rs.next()){
+            return rs.getString(1);
+        }
+        return null;
+    }
 }

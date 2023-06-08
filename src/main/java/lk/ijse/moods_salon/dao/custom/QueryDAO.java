@@ -26,4 +26,6 @@ public interface QueryDAO extends SuperDAO {
 
     ObservableList<UpcomingAppointmentTM> getUpcomingAppointments() throws SQLException;
 
+    String getCustomerName(String id) throws SQLException;
+
 }

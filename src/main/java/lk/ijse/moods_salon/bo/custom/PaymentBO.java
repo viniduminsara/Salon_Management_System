@@ -25,4 +25,6 @@ public interface PaymentBO extends SuperBO {
 
     boolean placePayment(PaymentDTO dto) throws SQLException;
 
+    String getCustomerName(String id) throws SQLException;
+
 }

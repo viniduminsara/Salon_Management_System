@@ -3,7 +3,6 @@ package lk.ijse.moods_salon.dao.custom.impl;
 import lk.ijse.moods_salon.dao.SQLUtil;
 import lk.ijse.moods_salon.dao.custom.InventoryOrderDetailsDAO;
 import lk.ijse.moods_salon.entity.InventoryOrderDetails;
-import lk.ijse.moods_salon.util.CrudUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
