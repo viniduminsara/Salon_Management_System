@@ -1,6 +1,7 @@
 package lk.ijse.moods_salon.bo.custom;
 
 import javafx.collections.ObservableList;
+import lk.ijse.moods_salon.bo.SuperBO;
 import lk.ijse.moods_salon.dto.InventoryDTO;
 import lk.ijse.moods_salon.dto.InventoryOrderDTO;
 import lk.ijse.moods_salon.dto.InventoryOrderDetailDTO;
@@ -9,7 +10,7 @@ import lk.ijse.moods_salon.dto.tm.InventoryOrderTM;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface InventoryBO {
+public interface InventoryBO extends SuperBO {
 
     boolean existsInventory(String id) throws SQLException;
 

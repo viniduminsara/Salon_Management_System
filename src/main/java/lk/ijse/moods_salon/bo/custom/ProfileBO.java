@@ -1,12 +1,13 @@
 package lk.ijse.moods_salon.bo.custom;
 
+import lk.ijse.moods_salon.bo.SuperBO;
 import lk.ijse.moods_salon.dto.UserDTO;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
-public interface ProfileBO {
+public interface ProfileBO extends SuperBO {
 
     boolean updateUser(UserDTO dto) throws SQLException;
 

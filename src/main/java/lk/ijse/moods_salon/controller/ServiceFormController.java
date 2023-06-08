@@ -15,7 +15,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import lk.ijse.moods_salon.bo.custom.ServiceBO;
-import lk.ijse.moods_salon.bo.custom.impl.ServiceBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.ServiceDTO;
 import lk.ijse.moods_salon.dto.tm.ServiceTM;
 import lk.ijse.moods_salon.util.RegExPatterns;
@@ -68,7 +69,7 @@ public class ServiceFormController implements Initializable {
 
     ObservableList<ServiceTM> data = FXCollections.observableArrayList();
 
-    ServiceBO serviceBO = new ServiceBOImpl();
+    ServiceBO serviceBO = (ServiceBO) BOFactory.getBoFactory().getBO(BOTypes.SERVICE);
 
     @FXML
     void addBtnOnAction(ActionEvent event) {

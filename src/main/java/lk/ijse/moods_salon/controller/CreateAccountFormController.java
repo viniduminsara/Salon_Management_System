@@ -15,7 +15,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.moods_salon.bo.custom.CreateAccountBO;
-import lk.ijse.moods_salon.bo.custom.impl.CreateAccountBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.util.RegExPatterns;
 import lk.ijse.moods_salon.util.SystemAlert;
@@ -55,7 +56,7 @@ public class CreateAccountFormController implements Initializable {
     @FXML
     private Group loginbtngrp;
 
-    CreateAccountBO createAccountBO = new CreateAccountBOImpl();
+    CreateAccountBO createAccountBO = (CreateAccountBO) BOFactory.getBoFactory().getBO(BOTypes.CREATEACCOUNT);
 
     public void logingrpMouseClicked(MouseEvent mouseEvent) throws IOException {
         pane.getChildren().clear();

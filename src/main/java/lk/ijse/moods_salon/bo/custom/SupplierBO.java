@@ -1,11 +1,12 @@
 package lk.ijse.moods_salon.bo.custom;
 
+import lk.ijse.moods_salon.bo.SuperBO;
 import lk.ijse.moods_salon.dto.SupplierDTO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface SupplierBO {
+public interface SupplierBO extends SuperBO {
 
     boolean existsSupplier(String id) throws SQLException;
 

@@ -1,6 +1,7 @@
 package lk.ijse.moods_salon.bo.custom;
 
 import javafx.collections.ObservableList;
+import lk.ijse.moods_salon.bo.SuperBO;
 import lk.ijse.moods_salon.dto.AttendanceDTO;
 import lk.ijse.moods_salon.dto.EmployeeDTO;
 import lk.ijse.moods_salon.dto.tm.AttendanceTM;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public interface EmployeeBO {
+public interface EmployeeBO extends SuperBO {
 
     boolean existsEmployee(String id) throws SQLException;
 

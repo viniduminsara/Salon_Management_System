@@ -14,7 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import lk.ijse.moods_salon.bo.custom.PaymentBO;
-import lk.ijse.moods_salon.bo.custom.impl.PaymentBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.PaymentDTO;
 import lk.ijse.moods_salon.dto.UserDTO;
@@ -86,7 +87,7 @@ public class PaymentFormController implements Initializable {
 
     ObservableList<PaymentTM> data = FXCollections.observableArrayList();
 
-    PaymentBO paymentBO = new PaymentBOImpl();
+    PaymentBO paymentBO = (PaymentBO) BOFactory.getBoFactory().getBO(BOTypes.PAYMENT);
 
     private UserDTO user;
 

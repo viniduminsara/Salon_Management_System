@@ -25,12 +25,9 @@ import java.util.ResourceBundle;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import lk.ijse.moods_salon.bo.custom.HomeBO;
-import lk.ijse.moods_salon.bo.custom.impl.HomeBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.tm.UpcomingAppointmentTM;
-import lk.ijse.moods_salon.model.AppointmentModel;
-import lk.ijse.moods_salon.model.CustomerModel;
-import lk.ijse.moods_salon.model.EmployeeModel;
-import lk.ijse.moods_salon.model.PaymentModel;
 
 public class HomeFormController implements Initializable {
     @FXML
@@ -69,7 +66,7 @@ public class HomeFormController implements Initializable {
     @FXML
     private Label lblTable;
 
-    HomeBO homeBO = new HomeBOImpl();
+    HomeBO homeBO = (HomeBO) BOFactory.getBoFactory().getBO(BOTypes.HOME);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

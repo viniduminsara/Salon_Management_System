@@ -20,7 +20,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import lk.ijse.moods_salon.bo.custom.EmployeeBO;
-import lk.ijse.moods_salon.bo.custom.impl.EmployeeBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.AttendanceDTO;
 import lk.ijse.moods_salon.dto.EmployeeDTO;
@@ -143,7 +144,7 @@ public class EmployeeFormController implements Initializable {
 
     ObservableList<AttendanceTM> employees = FXCollections.observableArrayList();
 
-    EmployeeBO employeeBO = new EmployeeBOImpl();
+    EmployeeBO employeeBO = (EmployeeBO) BOFactory.getBoFactory().getBO(BOTypes.EMPLOYEE);
 
     @FXML
     void addBtnOnAction(ActionEvent event) {

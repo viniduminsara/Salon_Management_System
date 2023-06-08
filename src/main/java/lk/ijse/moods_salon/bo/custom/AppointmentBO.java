@@ -1,6 +1,7 @@
 package lk.ijse.moods_salon.bo.custom;
 
 import javafx.collections.ObservableList;
+import lk.ijse.moods_salon.bo.SuperBO;
 import lk.ijse.moods_salon.dto.AppointmentDTO;
 import lk.ijse.moods_salon.dto.Employee_detailsDTO;
 import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
@@ -9,7 +10,7 @@ import lk.ijse.moods_salon.dto.Service_detailsDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface AppointmentBO {
+public interface AppointmentBO extends SuperBO {
 
     String getCustomerName(String id) throws SQLException;
 

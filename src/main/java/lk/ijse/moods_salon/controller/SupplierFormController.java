@@ -13,7 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import lk.ijse.moods_salon.bo.custom.SupplierBO;
-import lk.ijse.moods_salon.bo.custom.impl.SupplierBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.SupplierDTO;
 import lk.ijse.moods_salon.dto.tm.SupplierTM;
 import lk.ijse.moods_salon.util.RegExPatterns;
@@ -69,7 +70,7 @@ public class SupplierFormController implements Initializable {
 
     ObservableList<SupplierTM> data = FXCollections.observableArrayList();
 
-    SupplierBO supplierBO = new SupplierBOImpl();
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getBoFactory().getBO(BOTypes.SUPPLIER);
 
     @FXML
     void addSupplierBtnOnAction(ActionEvent event) {

@@ -14,7 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import lk.ijse.moods_salon.bo.custom.CustomerBO;
-import lk.ijse.moods_salon.bo.custom.impl.CustomerBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.CustomerDTO;
 import lk.ijse.moods_salon.dto.tm.CustomerTM;
 import lk.ijse.moods_salon.mail.Mail;
@@ -79,7 +80,7 @@ public class CustomerFormController implements Initializable {
 
     ObservableList<CustomerTM> data = FXCollections.observableArrayList();
 
-    CustomerBO customerBO = new CustomerBOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getBoFactory().getBO(BOTypes.CUSTOMER);
 
     @FXML
     private ProgressBar progress;

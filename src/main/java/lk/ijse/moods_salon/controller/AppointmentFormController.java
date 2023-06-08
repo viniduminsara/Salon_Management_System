@@ -22,7 +22,8 @@ import java.time.ZoneId;
 import java.util.*;
 
 import lk.ijse.moods_salon.bo.custom.AppointmentBO;
-import lk.ijse.moods_salon.bo.custom.impl.AppointmentBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.AppointmentDTO;
 import lk.ijse.moods_salon.dto.Employee_detailsDTO;
 import lk.ijse.moods_salon.dto.Inventory_detailsDTO;
@@ -124,7 +125,7 @@ public class AppointmentFormController implements Initializable {
 
     ObservableList<String> inventories = FXCollections.observableArrayList();
 
-    AppointmentBO appointmentBO = new AppointmentBOImpl();
+    AppointmentBO appointmentBO = (AppointmentBO) BOFactory.getBoFactory().getBO(BOTypes.APPOINTMENT);
 
     @FXML
     void addCustomerBtnOnAction(ActionEvent event) throws IOException {

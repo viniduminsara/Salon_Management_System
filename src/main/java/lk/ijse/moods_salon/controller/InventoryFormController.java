@@ -15,7 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import lk.ijse.moods_salon.bo.custom.InventoryBO;
-import lk.ijse.moods_salon.bo.custom.impl.InventoryBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.InventoryDTO;
 import lk.ijse.moods_salon.dto.InventoryOrderDTO;
@@ -160,7 +161,7 @@ public class InventoryFormController implements Initializable {
 
     ObservableList<InventoryOrderTM> orders = FXCollections.observableArrayList();
 
-    InventoryBO inventoryBO = new InventoryBOImpl();
+    InventoryBO inventoryBO = (InventoryBO) BOFactory.getBoFactory().getBO(BOTypes.INVENTORY);
 
     @FXML
     void addBtnOnAction(ActionEvent event) {

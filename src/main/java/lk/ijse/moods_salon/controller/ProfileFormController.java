@@ -8,7 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import lk.ijse.moods_salon.bo.custom.ProfileBO;
-import lk.ijse.moods_salon.bo.custom.impl.ProfileBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.UserDTO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
@@ -80,7 +81,7 @@ public class ProfileFormController {
 
     private CashierDashboardFormController cashierDashboardFormController;
 
-    ProfileBO profileBO = new ProfileBOImpl();
+    ProfileBO profileBO = (ProfileBO) BOFactory.getBoFactory().getBO(BOTypes.PROFILE);
 
     @FXML
     void btnChangeOnAction(ActionEvent event) {

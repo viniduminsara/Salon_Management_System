@@ -15,7 +15,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import lk.ijse.moods_salon.bo.custom.LoginBO;
-import lk.ijse.moods_salon.bo.custom.impl.LoginBOImpl;
+import lk.ijse.moods_salon.bo.factory.BOFactory;
+import lk.ijse.moods_salon.bo.factory.BOTypes;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.util.TxtColours;
 
@@ -49,7 +50,7 @@ public class LoginFormController implements Initializable {
     @FXML
     private Label lblError;
 
-    LoginBO loginBO = new LoginBOImpl();
+    LoginBO loginBO = (LoginBO) BOFactory.getBoFactory().getBO(BOTypes.LOGIN);
 
     @FXML
     void checkBoxOnAction(ActionEvent event) {

@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="336.0" prefWidth="599.0" style="-fx-background-color: #ffffff;" stylesheets="@../style/preLoader.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.moods_salon.controller.PreLoaderFormController">
    <children>
-      <ImageView fitHeight="319.0" fitWidth="599.0" layoutX="-1.0" pickOnBounds="true">
+      <ImageView fitHeight="319.0" fitWidth="599.0" pickOnBounds="true">
          <image>
             <Image url="@../img/preLoader.png" />
          </image>
@@ -25,6 +25,6 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="23.0" layoutY="195.0" prefHeight="21.0" prefWidth="124.0" text="Beta Version 1.0" textFill="#7b2cbf" />
+      <Label layoutX="23.0" layoutY="195.0" prefHeight="21.0" prefWidth="124.0" text="v1.0.0" textFill="#7b2cbf" />
    </children>
 </AnchorPane>
