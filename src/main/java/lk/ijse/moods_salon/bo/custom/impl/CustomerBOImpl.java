@@ -2,7 +2,8 @@ package lk.ijse.moods_salon.bo.custom.impl;
 
 import lk.ijse.moods_salon.bo.custom.CustomerBO;
 import lk.ijse.moods_salon.dao.custom.CustomerDAO;
-import lk.ijse.moods_salon.dao.custom.impl.CustomerDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.dto.CustomerDTO;
 import lk.ijse.moods_salon.entity.Customer;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class CustomerBOImpl implements CustomerBO {
 
-    CustomerDAO customerDAO = new CustomerDAOImpl();
+    CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.CUSTOMER);
 
     @Override
     public boolean existsCustomer(String id) throws SQLException {

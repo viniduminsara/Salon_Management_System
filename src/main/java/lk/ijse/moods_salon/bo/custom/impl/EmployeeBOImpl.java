@@ -5,9 +5,8 @@ import lk.ijse.moods_salon.bo.custom.EmployeeBO;
 import lk.ijse.moods_salon.dao.custom.AttendanceDAO;
 import lk.ijse.moods_salon.dao.custom.EmployeeDAO;
 import lk.ijse.moods_salon.dao.custom.QueryDAO;
-import lk.ijse.moods_salon.dao.custom.impl.AttendanceDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.EmployeeDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.QueryDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.dto.AttendanceDTO;
 import lk.ijse.moods_salon.dto.EmployeeDTO;
 import lk.ijse.moods_salon.dto.tm.AttendanceTM;
@@ -20,9 +19,9 @@ import java.util.ArrayList;
 
 public class EmployeeBOImpl implements EmployeeBO {
 
-    EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    AttendanceDAO attendanceDAO = new AttendanceDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    EmployeeDAO employeeDAO = (EmployeeDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.EMPLOYEE);
+    AttendanceDAO attendanceDAO = (AttendanceDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.ATTENDANCE);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.QUERY);
 
     @Override
     public boolean existsEmployee(String id) throws SQLException {

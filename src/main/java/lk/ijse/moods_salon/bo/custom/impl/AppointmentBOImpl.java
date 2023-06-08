@@ -3,7 +3,8 @@ package lk.ijse.moods_salon.bo.custom.impl;
 import javafx.collections.ObservableList;
 import lk.ijse.moods_salon.bo.custom.AppointmentBO;
 import lk.ijse.moods_salon.dao.custom.*;
-import lk.ijse.moods_salon.dao.custom.impl.*;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.AppointmentDTO;
 import lk.ijse.moods_salon.dto.Employee_detailsDTO;
@@ -20,14 +21,14 @@ import java.util.ArrayList;
 
 public class AppointmentBOImpl implements AppointmentBO {
 
-    AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
-    ServiceDAO serviceDAO = new ServiceDAOImpl();
-    CustomerDAO customerDAO = new CustomerDAOImpl();
-    EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    InventoryDAO inventoryDAO = new InventoryDAOImpl();
-    Service_detailsDAO service_detailsDAO = new Service_detailsDAOImpl();
-    Employee_detailsDAO employee_detailsDAO = new Employee_detailsDAOImpl();
-    Inventory_detailsDAO inventory_detailsDAO = new Inventory_detailsDAOImpl();
+    AppointmentDAO appointmentDAO = (AppointmentDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.APPOINTMENT);
+    ServiceDAO serviceDAO = (ServiceDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.SERVICE);
+    CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.CUSTOMER);
+    EmployeeDAO employeeDAO = (EmployeeDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.EMPLOYEE);
+    InventoryDAO inventoryDAO = (InventoryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.INVENTORY);
+    Service_detailsDAO service_detailsDAO = (Service_detailsDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.SERVICE_DETAILS);
+    Employee_detailsDAO employee_detailsDAO = (Employee_detailsDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.EMPLOYEE_DETAILS);
+    Inventory_detailsDAO inventory_detailsDAO = (Inventory_detailsDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.INVENTORY_DETAILS);
 
     @Override
     public String getCustomerName(String id) throws SQLException {

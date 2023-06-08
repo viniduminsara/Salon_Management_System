@@ -7,20 +7,18 @@ import lk.ijse.moods_salon.dao.custom.AppointmentDAO;
 import lk.ijse.moods_salon.dao.custom.CustomerDAO;
 import lk.ijse.moods_salon.dao.custom.EmployeeDAO;
 import lk.ijse.moods_salon.dao.custom.QueryDAO;
-import lk.ijse.moods_salon.dao.custom.impl.AppointmentDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.CustomerDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.EmployeeDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.QueryDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.dto.tm.UpcomingAppointmentTM;
 
 import java.sql.SQLException;
 
 public class HomeBOImpl implements HomeBO {
 
-    CustomerDAO customerDAO = new CustomerDAOImpl();
-    AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
-    EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.CUSTOMER);
+    AppointmentDAO appointmentDAO = (AppointmentDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.APPOINTMENT);
+    EmployeeDAO employeeDAO = (EmployeeDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.EMPLOYEE);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.QUERY);
 
     @Override
     public String getTotalCustomers() throws SQLException {

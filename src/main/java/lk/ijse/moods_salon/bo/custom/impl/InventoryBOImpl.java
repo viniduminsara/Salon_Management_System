@@ -3,7 +3,8 @@ package lk.ijse.moods_salon.bo.custom.impl;
 import javafx.collections.ObservableList;
 import lk.ijse.moods_salon.bo.custom.InventoryBO;
 import lk.ijse.moods_salon.dao.custom.*;
-import lk.ijse.moods_salon.dao.custom.impl.*;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.InventoryDTO;
 import lk.ijse.moods_salon.dto.InventoryOrderDTO;
@@ -19,11 +20,11 @@ import java.util.ArrayList;
 
 public class InventoryBOImpl implements InventoryBO {
 
-    InventoryDAO inventoryDAO = new InventoryDAOImpl();
-    SupplierDAO supplierDAO = new SupplierDAOImpl();
-    InventoryOrderDAO orderDAO = new InventoryOrderDAOImpl();
-    InventoryOrderDetailsDAO orderDetailsDAO = new InventoryOrderDetailsDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    InventoryDAO inventoryDAO = (InventoryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.INVENTORY);
+    SupplierDAO supplierDAO = (SupplierDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.SUPPLIER);
+    InventoryOrderDAO orderDAO = (InventoryOrderDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.INVENTORY_ORDER);
+    InventoryOrderDetailsDAO orderDetailsDAO = (InventoryOrderDetailsDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.INVENTORY_ORDER_DETAILS);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.QUERY);
 
     @Override
     public boolean existsInventory(String id) throws SQLException {

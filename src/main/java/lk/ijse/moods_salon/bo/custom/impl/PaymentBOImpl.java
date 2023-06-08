@@ -6,10 +6,8 @@ import lk.ijse.moods_salon.dao.custom.AppointmentDAO;
 import lk.ijse.moods_salon.dao.custom.PaymentDAO;
 import lk.ijse.moods_salon.dao.custom.QueryDAO;
 import lk.ijse.moods_salon.dao.custom.UserDAO;
-import lk.ijse.moods_salon.dao.custom.impl.AppointmentDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.PaymentDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.QueryDAOImpl;
-import lk.ijse.moods_salon.dao.custom.impl.UserDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.db.DBConnection;
 import lk.ijse.moods_salon.dto.PaymentDTO;
 import lk.ijse.moods_salon.dto.tm.PaymentTM;
@@ -20,10 +18,10 @@ import java.sql.SQLException;
 
 public class PaymentBOImpl implements PaymentBO {
 
-    PaymentDAO paymentDAO = new PaymentDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
-    UserDAO userDAO = new UserDAOImpl();
-    AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
+    PaymentDAO paymentDAO = (PaymentDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.PAYMENT);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.QUERY);
+    UserDAO userDAO = (UserDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.USER);
+    AppointmentDAO appointmentDAO = (AppointmentDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.APPOINTMENT);
 
     @Override
     public String getPaymentAmount(String id) throws SQLException {

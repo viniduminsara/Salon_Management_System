@@ -2,7 +2,8 @@ package lk.ijse.moods_salon.bo.custom.impl;
 
 import lk.ijse.moods_salon.bo.custom.ProfileBO;
 import lk.ijse.moods_salon.dao.custom.UserDAO;
-import lk.ijse.moods_salon.dao.custom.impl.UserDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.dto.UserDTO;
 import lk.ijse.moods_salon.entity.User;
 
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 
 public class ProfileBOImpl implements ProfileBO {
 
-    UserDAO userDAO = new UserDAOImpl();
+    UserDAO userDAO = (UserDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.USER);
 
     @Override
     public boolean updateUser(UserDTO dto) throws SQLException {

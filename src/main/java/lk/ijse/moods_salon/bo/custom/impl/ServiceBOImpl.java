@@ -2,7 +2,8 @@ package lk.ijse.moods_salon.bo.custom.impl;
 
 import lk.ijse.moods_salon.bo.custom.ServiceBO;
 import lk.ijse.moods_salon.dao.custom.ServiceDAO;
-import lk.ijse.moods_salon.dao.custom.impl.ServiceDAOImpl;
+import lk.ijse.moods_salon.dao.factory.DAOFactory;
+import lk.ijse.moods_salon.dao.factory.DAOTypes;
 import lk.ijse.moods_salon.dto.ServiceDTO;
 import lk.ijse.moods_salon.entity.Service;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class ServiceBOImpl implements ServiceBO {
 
-    ServiceDAO serviceDAO = new ServiceDAOImpl();
+    ServiceDAO serviceDAO = (ServiceDAO) DAOFactory.getDaoFactory().getDAO(DAOTypes.SERVICE);
 
     @Override
     public boolean serviceExists(String id) throws SQLException {

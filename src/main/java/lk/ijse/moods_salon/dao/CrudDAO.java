@@ -3,7 +3,7 @@ package lk.ijse.moods_salon.dao;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface CrudDAO<T,ID> {
+public interface CrudDAO<T,ID> extends SuperDAO{
 
     boolean add(T entity) throws SQLException;
 

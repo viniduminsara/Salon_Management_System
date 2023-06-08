@@ -1,0 +1,21 @@
+package lk.ijse.moods_salon.dao.factory;
+
+public enum DAOTypes {
+
+    APPOINTMENT,
+    ATTENDANCE,
+    CUSTOMER,
+    EMPLOYEE,
+    EMPLOYEE_DETAILS,
+    INVENTORY,
+    INVENTORY_DETAILS,
+    INVENTORY_ORDER,
+    INVENTORY_ORDER_DETAILS,
+    PAYMENT,
+    QUERY,
+    SERVICE,
+    SERVICE_DETAILS,
+    SUPPLIER,
+    USER
+
+}
